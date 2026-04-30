@@ -1,1 +1,10 @@
 project_id = "hhuvzulqbmyredvrpoyz"
+
+[functions.research-chat]
+verify_jwt = false
+
+[functions.analyze-document]
+verify_jwt = true
+
+[functions.generate-gate-checklist]
+verify_jwt = true
