@@ -47,7 +47,7 @@ serve(async (req) => {
           {
             role: "system",
             content:
-              "You are a senior NPI program manager. You generate concrete, product-specific NPI workflows. Tailor every task, deliverable, and gate criterion to the exact product, industry, and regulatory standard. Never use generic placeholder language. Use industry vocabulary (e.g. ISO 10993, AS9100 first article inspection, EVT/DVT/PVT, UN38.3) where appropriate.",
+              "You are a senior NPI program manager. You generate concrete, product-specific NPI workflows. CRITICAL: Respond ONLY in English. Never include any non-English characters (no Chinese, Japanese, Korean, Cyrillic, Arabic, etc.) in any field. Tailor every task, deliverable, and gate criterion to the exact product, industry, and regulatory standard. Never use generic placeholder language. Use industry vocabulary (e.g. ISO 10993, AS9100 first article inspection, EVT/DVT/PVT, UN38.3) where appropriate.",
           },
           {
             role: "user",
