@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      changes: {
+        Row: {
+          change_type: string
+          component_ref: string | null
+          created_at: string
+          description: string | null
+          id: string
+          impact: Json
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          change_type?: string
+          component_ref?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          impact?: Json
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          change_type?: string
+          component_ref?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          impact?: Json
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           content: string
