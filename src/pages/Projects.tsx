@@ -49,18 +49,39 @@ export default function Projects() {
   const [form, setForm] = useState({ name: "", product_description: "", industry: "", gate_standard: "" });
 
   const handleDelete = async (id: string) => {
-    setDeletingId(id);
-    try {
-      await supabase.from("project_phases").delete().eq("project_id", id);
-      const { error } = await supabase.from("projects").delete().eq("id", id);
-      if (error) throw error;
-      setProjects(prev => prev.filter(p => p.id !== id));
-      toast.success("Project deleted");
-    } catch (e: any) {
-      toast.error(e.message ?? "Failed to delete project");
-    } finally {
-      setDeletingId(null);
-    }
+    const project = projects.find(p => p.id === id);
+    if (!project) return;
+    // Optimistically hide
+    setProjects(prev => prev.filter(p => p.id !== id));
+
+    let undone = false;
+    const timer = setTimeout(async () => {
+      if (undone) return;
+      setDeletingId(id);
+      try {
+        await supabase.from("project_phases").delete().eq("project_id", id);
+        const { error } = await supabase.from("projects").delete().eq("id", id);
+        if (error) throw error;
+      } catch (e: any) {
+        toast.error(e.message ?? "Failed to delete project");
+        setProjects(prev => [project, ...prev].sort((a, b) => (a.created_at < b.created_at ? 1 : -1)));
+      } finally {
+        setDeletingId(null);
+      }
+    }, 5000);
+
+    toast.success("Project deleted", {
+      duration: 5000,
+      action: {
+        label: "Undo",
+        onClick: () => {
+          undone = true;
+          clearTimeout(timer);
+          setProjects(prev => [project, ...prev].sort((a, b) => (a.created_at < b.created_at ? 1 : -1)));
+          toast.success("Project restored");
+        },
+      },
+    });
   };
 
   const load = async () => {
