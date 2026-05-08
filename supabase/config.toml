@@ -17,3 +17,6 @@ verify_jwt = true
 
 [functions.generate-artifact]
 verify_jwt = true
+
+[functions.generate-workflow]
+verify_jwt = true
