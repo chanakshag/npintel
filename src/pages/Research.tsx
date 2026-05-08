@@ -44,15 +44,20 @@ const Research = () => {
   }, [messages, streaming]);
 
   useEffect(() => {
-    const prompt = searchParams.get("prompt");
+    const stored = sessionStorage.getItem("research_prompt");
+    const prompt = stored || searchParams.get("prompt");
     if (prompt && user && !autoSentRef.current && !streaming) {
       autoSentRef.current = true;
+      sessionStorage.removeItem("research_prompt");
       send(prompt);
-      searchParams.delete("prompt");
-      setSearchParams(searchParams, { replace: true });
+      if (searchParams.get("prompt") || searchParams.get("phase")) {
+        searchParams.delete("prompt");
+        searchParams.delete("phase");
+        setSearchParams(searchParams, { replace: true });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, searchParams]);
+  }, [user]);
 
   const send = async (text?: string) => {
     const content = (text ?? input).trim();
