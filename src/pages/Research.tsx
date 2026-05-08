@@ -174,7 +174,13 @@ const Research = () => {
                   </div>
                 )}
                 <Card className={`max-w-[80%] border-border/60 px-3.5 py-2.5 ${m.role === "user" ? "bg-primary/10" : ""}`}>
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed">{m.content}</p>
+                  {m.role === "assistant" ? (
+                    <div className="prose prose-sm max-w-none prose-headings:mt-3 prose-headings:mb-2 prose-headings:font-semibold prose-h1:text-base prose-h2:text-sm prose-h3:text-sm prose-p:my-2 prose-p:text-sm prose-p:leading-relaxed prose-li:text-sm prose-li:my-0.5 prose-ul:my-2 prose-ol:my-2 prose-strong:font-semibold prose-code:text-xs prose-code:bg-secondary prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-table:text-sm prose-th:px-2 prose-th:py-1 prose-td:px-2 prose-td:py-1 prose-a:text-primary">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed">{m.content}</p>
+                  )}
                 </Card>
                 {m.role === "user" && (
                   <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-secondary">
