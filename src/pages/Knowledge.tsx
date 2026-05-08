@@ -10,11 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
-  BookOpen, Upload, Loader2, Trash2, Sparkles, Search, FileText, Wand2, Download, Library, Tag,
+  BookOpen, Upload, Loader2, Trash2, Sparkles, Search, FileText, Wand2, Download, Library, Tag, FileType, FileDown,
 } from "lucide-react";
+import { downloadMarkdown, downloadPdf, downloadDocx } from "@/lib/exportArtifact";
 import { toast } from "sonner";
 
 type Source = {
@@ -156,33 +158,14 @@ const Knowledge = () => {
     }
   };
 
-  const downloadArtifact = (a: Artifact) => {
-    const md = `# ${a.title}\n\n_${a.artifact_type}_\n\n${a.content}`;
-    const safeName = `${(a.title || "document").replace(/[^\w-]+/g, "_")}.md`;
+  const exportAs = async (a: Artifact, fmt: "md" | "pdf" | "docx") => {
     try {
-      const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = safeName;
-      link.rel = "noopener";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      toast.success("Download started");
-    } catch (e) {
-      // Sandboxed iframe fallback: open in new tab so the user can save manually
-      const win = window.open("", "_blank", "noopener,noreferrer");
-      if (win) {
-        win.document.title = safeName;
-        win.document.body.style.whiteSpace = "pre-wrap";
-        win.document.body.style.fontFamily = "ui-monospace, monospace";
-        win.document.body.textContent = md;
-      } else {
-        navigator.clipboard?.writeText(md);
-        toast.error("Download blocked. Copied content to clipboard instead.");
-      }
+      if (fmt === "md") downloadMarkdown(a.title, a.artifact_type, a.content);
+      else if (fmt === "pdf") downloadPdf(a.title, a.artifact_type, a.content);
+      else await downloadDocx(a.title, a.artifact_type, a.content);
+      toast.success(`Downloaded ${fmt.toUpperCase()}`);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Export failed");
     }
   };
 
