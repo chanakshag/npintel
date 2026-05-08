@@ -13,6 +13,8 @@ import Research from "./pages/Research";
 import Gates from "./pages/Gates";
 import Changes from "./pages/Changes";
 import Knowledge from "./pages/Knowledge";
+import Projects from "./pages/Projects";
+import Workflow from "./pages/Workflow";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -31,6 +33,8 @@ const App = () => (
             <Route path="/traceability" element={<ProtectedRoute><Traceability /></ProtectedRoute>} />
             <Route path="/research" element={<ProtectedRoute><Research /></ProtectedRoute>} />
             <Route path="/knowledge" element={<ProtectedRoute><Knowledge /></ProtectedRoute>} />
+            <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
+            <Route path="/workflow/:projectId" element={<ProtectedRoute><Workflow /></ProtectedRoute>} />
             <Route path="/changes" element={<ProtectedRoute><Changes /></ProtectedRoute>} />
             <Route path="/gates" element={<ProtectedRoute><Gates /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />

@@ -275,6 +275,148 @@ export type Database = {
         }
         Relationships: []
       }
+      project_phase_documents: {
+        Row: {
+          artifact_id: string | null
+          created_at: string
+          document_id: string | null
+          id: string
+          output_key: string
+          phase_id: string
+          user_id: string
+        }
+        Insert: {
+          artifact_id?: string | null
+          created_at?: string
+          document_id?: string | null
+          id?: string
+          output_key: string
+          phase_id: string
+          user_id: string
+        }
+        Update: {
+          artifact_id?: string | null
+          created_at?: string
+          document_id?: string | null
+          id?: string
+          output_key?: string
+          phase_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_phase_documents_phase_id_fkey"
+            columns: ["phase_id"]
+            isOneToOne: false
+            referencedRelation: "project_phases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_phases: {
+        Row: {
+          badge_color: string
+          created_at: string
+          custom: boolean
+          gate_checked: Json
+          gate_criteria: Json
+          id: string
+          locked: boolean
+          outputs: Json
+          phase_index: number
+          project_id: string
+          status: string
+          subtitle: string | null
+          tasks: Json
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          badge_color?: string
+          created_at?: string
+          custom?: boolean
+          gate_checked?: Json
+          gate_criteria?: Json
+          id?: string
+          locked?: boolean
+          outputs?: Json
+          phase_index: number
+          project_id: string
+          status?: string
+          subtitle?: string | null
+          tasks?: Json
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          badge_color?: string
+          created_at?: string
+          custom?: boolean
+          gate_checked?: Json
+          gate_criteria?: Json
+          id?: string
+          locked?: boolean
+          outputs?: Json
+          phase_index?: number
+          project_id?: string
+          status?: string
+          subtitle?: string | null
+          tasks?: Json
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_phases_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          active_phase_index: number
+          created_at: string
+          gate_standard: string
+          id: string
+          industry: string
+          name: string
+          product_description: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active_phase_index?: number
+          created_at?: string
+          gate_standard: string
+          id?: string
+          industry: string
+          name: string
+          product_description: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active_phase_index?: number
+          created_at?: string
+          gate_standard?: string
+          id?: string
+          industry?: string
+          name?: string
+          product_description?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       requirements: {
         Row: {
           created_at: string
