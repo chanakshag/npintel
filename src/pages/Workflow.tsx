@@ -130,7 +130,39 @@ export default function Workflow() {
 
   const askAI = () => {
     if (!active || !project) return;
-    const q = `Regarding my ${project.product_description} (${project.industry}, ${project.gate_standard}): for the "${active.title}" phase, what are the most critical risks and best practices I should focus on?`;
+    const tasks = active.tasks.map((t, i) => `${i + 1}. ${t.name} — ${t.description}`).join("\n");
+    const outputs = active.outputs.map(o => `- ${o.name}`).join("\n");
+    const gates = active.gate_criteria.map((c, i) => `${i + 1}. ${c.text}`).join("\n");
+    const q = `I'm working on a project and need a deep dive on one specific phase.
+
+PROJECT CONTEXT
+- Product: ${project.product_description}
+- Industry: ${project.industry}
+- Target gate standard: ${project.gate_standard}
+
+CURRENT PHASE
+- Phase ${active.phase_index + 1} of 8: ${active.title}
+- Why it matters: ${active.subtitle ?? "—"}
+
+KEY ACTIVITIES IN THIS PHASE
+${tasks}
+
+REQUIRED DELIVERABLES
+${outputs}
+
+STAGE GATE CRITERIA
+${gates}
+
+Please give me a thorough deep dive on this phase for my specific product. Cover:
+1. The most critical risks and common failure modes engineers hit at this phase for this kind of product
+2. Industry best practices and what "good" looks like here under ${project.gate_standard}
+3. Concrete, actionable recommendations on how to execute each key activity above
+4. How to satisfy each stage gate criterion (what evidence to collect, who signs off)
+5. Practical guidance on producing each required deliverable (structure, must-have sections, traps to avoid)
+6. Suggested suppliers / standards / tools / test methods that are relevant here
+7. Realistic timeline and dependencies on other phases
+
+Use markdown with clear headings. Be specific to my product — no generic answers.`;
     navigate(`/research?prompt=${encodeURIComponent(q)}`);
   };
 
