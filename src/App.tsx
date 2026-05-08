@@ -12,6 +12,7 @@ import Traceability from "./pages/Traceability";
 import Research from "./pages/Research";
 import Gates from "./pages/Gates";
 import Changes from "./pages/Changes";
+import Knowledge from "./pages/Knowledge";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/documents" element={<ProtectedRoute><Documents /></ProtectedRoute>} />
             <Route path="/traceability" element={<ProtectedRoute><Traceability /></ProtectedRoute>} />
             <Route path="/research" element={<ProtectedRoute><Research /></ProtectedRoute>} />
+            <Route path="/knowledge" element={<ProtectedRoute><Knowledge /></ProtectedRoute>} />
             <Route path="/changes" element={<ProtectedRoute><Changes /></ProtectedRoute>} />
             <Route path="/gates" element={<ProtectedRoute><Gates /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />

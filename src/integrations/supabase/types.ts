@@ -149,6 +149,108 @@ export type Database = {
         }
         Relationships: []
       }
+      knowledge_artifacts: {
+        Row: {
+          artifact_type: string
+          content: string
+          created_at: string
+          id: string
+          prompt: string | null
+          source_ids: string[]
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          artifact_type?: string
+          content?: string
+          created_at?: string
+          id?: string
+          prompt?: string | null
+          source_ids?: string[]
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          artifact_type?: string
+          content?: string
+          created_at?: string
+          id?: string
+          prompt?: string | null
+          source_ids?: string[]
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      knowledge_sources: {
+        Row: {
+          abstract: string | null
+          authors: string[] | null
+          citation: string | null
+          created_at: string
+          doi: string | null
+          file_path: string | null
+          id: string
+          key_findings: Json
+          kind: string
+          mime_type: string | null
+          size_bytes: number | null
+          status: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+          venue: string | null
+          year: number | null
+        }
+        Insert: {
+          abstract?: string | null
+          authors?: string[] | null
+          citation?: string | null
+          created_at?: string
+          doi?: string | null
+          file_path?: string | null
+          id?: string
+          key_findings?: Json
+          kind?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          status?: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+          venue?: string | null
+          year?: number | null
+        }
+        Update: {
+          abstract?: string | null
+          authors?: string[] | null
+          citation?: string | null
+          created_at?: string
+          doi?: string | null
+          file_path?: string | null
+          id?: string
+          key_findings?: Json
+          kind?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          status?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          venue?: string | null
+          year?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           company: string | null
