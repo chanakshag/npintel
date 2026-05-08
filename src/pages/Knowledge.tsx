@@ -157,11 +157,33 @@ const Knowledge = () => {
   };
 
   const downloadArtifact = (a: Artifact) => {
-    const blob = new Blob([`# ${a.title}\n\n_${a.artifact_type}_\n\n${a.content}`], { type: "text/markdown" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url; link.download = `${a.title.replace(/[^\w-]+/g, "_")}.md`;
-    link.click(); URL.revokeObjectURL(url);
+    const md = `# ${a.title}\n\n_${a.artifact_type}_\n\n${a.content}`;
+    const safeName = `${(a.title || "document").replace(/[^\w-]+/g, "_")}.md`;
+    try {
+      const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = safeName;
+      link.rel = "noopener";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast.success("Download started");
+    } catch (e) {
+      // Sandboxed iframe fallback: open in new tab so the user can save manually
+      const win = window.open("", "_blank", "noopener,noreferrer");
+      if (win) {
+        win.document.title = safeName;
+        win.document.body.style.whiteSpace = "pre-wrap";
+        win.document.body.style.fontFamily = "ui-monospace, monospace";
+        win.document.body.textContent = md;
+      } else {
+        navigator.clipboard?.writeText(md);
+        toast.error("Download blocked. Copied content to clipboard instead.");
+      }
+    }
   };
 
   const filteredSources = sources.filter(s =>
