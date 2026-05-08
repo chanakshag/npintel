@@ -43,6 +43,17 @@ const Research = () => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, streaming]);
 
+  useEffect(() => {
+    const prompt = searchParams.get("prompt");
+    if (prompt && user && !autoSentRef.current && !streaming) {
+      autoSentRef.current = true;
+      send(prompt);
+      searchParams.delete("prompt");
+      setSearchParams(searchParams, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, searchParams]);
+
   const send = async (text?: string) => {
     const content = (text ?? input).trim();
     if (!content || streaming || !user) return;
