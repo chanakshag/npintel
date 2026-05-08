@@ -121,11 +121,44 @@ export default function Projects() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {projects.map(p => (
-            <Card key={p.id} className="cursor-pointer transition-shadow hover:shadow-md" onClick={() => navigate(`/workflow/${p.id}`)}>
+            <Card key={p.id} className="group relative cursor-pointer transition-shadow hover:shadow-md" onClick={() => navigate(`/workflow/${p.id}`)}>
               <CardContent className="space-y-3 p-5">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-semibold leading-tight">{p.name}</h3>
-                  <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <div className="flex items-center gap-1">
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
+                          onClick={(e) => e.stopPropagation()}
+                          aria-label="Delete project"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete this project?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will permanently delete "{p.name}" and its workflow phases. This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDelete(p.id)}
+                            disabled={deletingId === p.id}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            {deletingId === p.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Delete"}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  </div>
                 </div>
                 <p className="line-clamp-2 text-xs text-muted-foreground">{p.product_description}</p>
                 <div className="flex flex-wrap gap-1.5">
