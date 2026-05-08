@@ -51,6 +51,7 @@ export default function Projects() {
   const handleDelete = async (id: string) => {
     setDeletingId(id);
     try {
+      await supabase.from("project_phases").delete().eq("project_id", id);
       const { error } = await supabase.from("projects").delete().eq("id", id);
       if (error) throw error;
       setProjects(prev => prev.filter(p => p.id !== id));
