@@ -390,9 +390,24 @@ const Knowledge = () => {
                           <h2 className="mt-0.5 text-lg font-semibold">{activeArtifact.title}</h2>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <Button size="sm" variant="outline" onClick={() => downloadArtifact(activeArtifact)} disabled={!activeArtifact.content}>
-                            <Download className="mr-1.5 h-3.5 w-3.5" />Markdown
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button size="sm" variant="outline" disabled={!activeArtifact.content}>
+                                <Download className="mr-1.5 h-3.5 w-3.5" />Download
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-44">
+                              <DropdownMenuItem onClick={() => exportAs(activeArtifact, "pdf")}>
+                                <FileDown className="mr-2 h-4 w-4" />PDF
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => exportAs(activeArtifact, "docx")}>
+                                <FileType className="mr-2 h-4 w-4" />Word (.docx)
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => exportAs(activeArtifact, "md")}>
+                                <FileText className="mr-2 h-4 w-4" />Markdown
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                           <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => removeArtifact(activeArtifact)}>
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
