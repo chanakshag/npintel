@@ -45,7 +45,22 @@ export default function Projects() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", product_description: "", industry: "", gate_standard: "" });
+
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    try {
+      const { error } = await supabase.from("projects").delete().eq("id", id);
+      if (error) throw error;
+      setProjects(prev => prev.filter(p => p.id !== id));
+      toast.success("Project deleted");
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed to delete project");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const load = async () => {
     setLoading(true);
