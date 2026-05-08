@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 
 const items = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Projects", url: "/projects", icon: Workflow },
   { title: "Documents", url: "/documents", icon: FileText },
   { title: "Knowledge Board", url: "/knowledge", icon: BookOpen },
   { title: "Traceability", url: "/traceability", icon: GitBranch },
