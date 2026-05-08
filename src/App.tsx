@@ -13,6 +13,8 @@ import Research from "./pages/Research";
 import Gates from "./pages/Gates";
 import Changes from "./pages/Changes";
 import Knowledge from "./pages/Knowledge";
+import Projects from "./pages/Projects";
+import Workflow from "./pages/Workflow";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
