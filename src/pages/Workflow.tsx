@@ -163,7 +163,8 @@ Please give me a thorough deep dive on this phase for my specific product. Cover
 7. Realistic timeline and dependencies on other phases
 
 Use markdown with clear headings. Be specific to my product — no generic answers.`;
-    navigate(`/research?prompt=${encodeURIComponent(q)}`);
+    sessionStorage.setItem("research_prompt", q);
+    navigate(`/research?phase=${active.id}`);
   };
 
   const regenerate = async () => {
