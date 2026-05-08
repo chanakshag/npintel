@@ -20,11 +20,13 @@ const SUGGESTIONS = [
 
 const Research = () => {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [docCount, setDocCount] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const autoSentRef = useRef(false);
 
   useEffect(() => {
     (async () => {
