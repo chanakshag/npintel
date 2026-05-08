@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import {
-  LayoutDashboard, FileText, GitBranch, MessagesSquare, GitCompare, ClipboardCheck, LogOut, Cpu,
+  LayoutDashboard, FileText, GitBranch, MessagesSquare, GitCompare, ClipboardCheck, LogOut, Cpu, BookOpen,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader,
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 const items = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Documents", url: "/documents", icon: FileText },
+  { title: "Knowledge Board", url: "/knowledge", icon: BookOpen },
   { title: "Traceability", url: "/traceability", icon: GitBranch },
   { title: "Research", url: "/research", icon: MessagesSquare },
   { title: "Change Log", url: "/changes", icon: GitCompare },
