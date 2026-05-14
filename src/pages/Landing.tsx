@@ -163,8 +163,8 @@ export default function Landing() {
               Put Hardware Development on Autopilot
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-balance text-base leading-relaxed text-slate-600 md:text-lg">
-              Spectir owns the full NPI workflow end-to-end — documentation, traceability, research synthesis,
-              and change propagation — freeing your engineers to build, not document.
+              Spectir owns the full hardware lifecycle — NPI documentation, bill of materials intelligence,
+              supply chain monitoring, and procurement automation — freeing your engineers to build, not administrate.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild variant="outline" size="lg" className="border-navy/20 text-navy hover:bg-navy/5">
