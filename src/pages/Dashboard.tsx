@@ -12,26 +12,35 @@ type Stats = {
   requirements: number;
   links: number;
   gates: number;
+  boms: number;
+  suppliers: number;
+  prs: number;
 };
 
 const Dashboard = () => {
-  const [stats, setStats] = useState<Stats>({ documents: 0, requirements: 0, links: 0, gates: 0 });
+  const [stats, setStats] = useState<Stats>({ documents: 0, requirements: 0, links: 0, gates: 0, boms: 0, suppliers: 0, prs: 0 });
   const [recentDocs, setRecentDocs] = useState<any[]>([]);
 
   useEffect(() => {
     (async () => {
-      const [d, r, l, g, rd] = await Promise.all([
+      const [d, r, l, g, rd, b, s, p] = await Promise.all([
         supabase.from("documents").select("id", { count: "exact", head: true }),
         supabase.from("requirements").select("id", { count: "exact", head: true }),
         supabase.from("trace_links").select("id", { count: "exact", head: true }),
         supabase.from("gate_reviews").select("id", { count: "exact", head: true }),
         supabase.from("documents").select("*").order("created_at", { ascending: false }).limit(5),
+        supabase.from("boms").select("id", { count: "exact", head: true }),
+        supabase.from("suppliers").select("id", { count: "exact", head: true }),
+        supabase.from("purchase_requisitions").select("id", { count: "exact", head: true }),
       ]);
       setStats({
         documents: d.count ?? 0,
         requirements: r.count ?? 0,
         links: l.count ?? 0,
         gates: g.count ?? 0,
+        boms: b.count ?? 0,
+        suppliers: s.count ?? 0,
+        prs: p.count ?? 0,
       });
       setRecentDocs(rd.data ?? []);
     })();
@@ -96,19 +105,19 @@ const Dashboard = () => {
                 stat: `${stats.documents} documents · ${stats.gates} gate reviews`,
               },
               {
-                name: "BOM Intel", icon: Layers, active: false, to: "/bom",
+                name: "BOM Intel", icon: Layers, active: true, to: "/bom",
                 desc: "Bill of materials intelligence & component risk",
-                stat: "BOM versioning · EOL detection",
+                stat: `${stats.boms} BOMs tracked`,
               },
               {
-                name: "Supply Intel", icon: Truck, active: false, to: "/supply",
+                name: "Supply Intel", icon: Truck, active: true, to: "/supply",
                 desc: "Supplier qualification & supply chain risk",
-                stat: "Qualification packages · Lead tracking",
+                stat: `${stats.suppliers} suppliers`,
               },
               {
-                name: "Procure Intel", icon: ShoppingCart, active: false, to: "/procurement",
+                name: "Procure Intel", icon: ShoppingCart, active: true, to: "/procurement",
                 desc: "Procurement automation, PRs & POs",
-                stat: "Auto-PRs · RFQ drafting · PO tracking",
+                stat: `${stats.prs} purchase requisitions`,
               },
             ].map(p => (
               <Card key={p.name} className="relative overflow-hidden border-border/60 p-5 transition-colors hover:border-primary/40">

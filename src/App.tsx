@@ -17,8 +17,12 @@ import Knowledge from "./pages/Knowledge";
 import Projects from "./pages/Projects";
 import Workflow from "./pages/Workflow";
 import BomIntel from "./pages/BomIntel";
+import BomDetail from "./pages/BomDetail";
 import SupplyIntel from "./pages/SupplyIntel";
+import SupplierDetail from "./pages/SupplierDetail";
 import ProcureIntel from "./pages/ProcureIntel";
+import PrDetail from "./pages/PrDetail";
+import SpendAnalytics from "./pages/SpendAnalytics";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -43,8 +47,13 @@ const App = () => (
             <Route path="/changes" element={<ProtectedRoute><Changes /></ProtectedRoute>} />
             <Route path="/gates" element={<ProtectedRoute><Gates /></ProtectedRoute>} />
             <Route path="/bom" element={<ProtectedRoute><BomIntel /></ProtectedRoute>} />
+            <Route path="/bom/:bomId" element={<ProtectedRoute><BomDetail /></ProtectedRoute>} />
             <Route path="/supply" element={<ProtectedRoute><SupplyIntel /></ProtectedRoute>} />
+            <Route path="/supply/:supplierId" element={<ProtectedRoute><SupplierDetail /></ProtectedRoute>} />
             <Route path="/procurement" element={<ProtectedRoute><ProcureIntel /></ProtectedRoute>} />
+            <Route path="/procurement/spend" element={<ProtectedRoute><SpendAnalytics /></ProtectedRoute>} />
+            <Route path="/procurement/pr/new" element={<ProtectedRoute><PrDetail /></ProtectedRoute>} />
+            <Route path="/procurement/pr/:prId" element={<ProtectedRoute><PrDetail /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
