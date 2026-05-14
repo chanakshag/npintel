@@ -24,6 +24,7 @@ const SUGGESTIONS = [
 
 const Research = () => {
   const { user } = useAuth();
+  const { projectId, project } = useProject();
   const [searchParams, setSearchParams] = useSearchParams();
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -36,12 +37,14 @@ const Research = () => {
     (async () => {
       const [hist, dc] = await Promise.all([
         supabase.from("chat_messages").select("*").order("created_at", { ascending: true }).limit(50),
-        supabase.from("documents").select("id", { count: "exact", head: true }),
+        projectId
+          ? supabase.from("documents").select("id", { count: "exact", head: true }).eq("project_id", projectId)
+          : Promise.resolve({ count: 0 } as any),
       ]);
       setMessages((hist.data as any[])?.map(m => ({ id: m.id, role: m.role, content: m.content })) ?? []);
       setDocCount(dc.count ?? 0);
     })();
-  }, []);
+  }, [projectId]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
