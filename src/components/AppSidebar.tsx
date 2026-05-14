@@ -10,7 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 
 const items = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Projects", url: "/projects", icon: Workflow },
   { title: "Documents", url: "/documents", icon: FileText },
   { title: "Knowledge Board", url: "/knowledge", icon: BookOpen },
@@ -35,7 +35,7 @@ export function AppSidebar() {
           </div>
           {!collapsed && (
             <div className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold text-sidebar-accent-foreground">NPI Intelligence</span>
+              <span className="text-sm font-semibold text-sidebar-accent-foreground">Spectrum</span>
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Engineering Agent</span>
             </div>
           )}
