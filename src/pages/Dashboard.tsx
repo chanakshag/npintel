@@ -21,17 +21,35 @@ const Dashboard = () => {
   const [stats, setStats] = useState<Stats>({ documents: 0, requirements: 0, links: 0, gates: 0, boms: 0, suppliers: 0, prs: 0 });
   const [recentDocs, setRecentDocs] = useState<any[]>([]);
 
+  const [activeProject, setActiveProject] = useState<{ id: string; name: string } | null>(null);
+
   useEffect(() => {
     (async () => {
+      const { data: proj } = await supabase
+        .from("projects")
+        .select("id,name")
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const pid = (proj as any)?.id ?? null;
+      setActiveProject((proj as any) ?? null);
+
+      if (!pid) {
+        setStats({ documents: 0, requirements: 0, links: 0, gates: 0, boms: 0, suppliers: 0, prs: 0 });
+        setRecentDocs([]);
+        return;
+      }
+
+      const scoped = (q: any) => q.eq("project_id", pid);
       const [d, r, l, g, rd, b, s, p] = await Promise.all([
-        supabase.from("documents").select("id", { count: "exact", head: true }),
-        supabase.from("requirements").select("id", { count: "exact", head: true }),
-        supabase.from("trace_links").select("id", { count: "exact", head: true }),
-        supabase.from("gate_reviews").select("id", { count: "exact", head: true }),
-        supabase.from("documents").select("*").order("created_at", { ascending: false }).limit(5),
-        supabase.from("boms").select("id", { count: "exact", head: true }),
-        supabase.from("suppliers").select("id", { count: "exact", head: true }),
-        supabase.from("purchase_requisitions").select("id", { count: "exact", head: true }),
+        scoped(supabase.from("documents").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("requirements").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("trace_links").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("gate_reviews").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("documents").select("*").order("created_at", { ascending: false }).limit(5)),
+        scoped(supabase.from("boms").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("suppliers").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("purchase_requisitions").select("id", { count: "exact", head: true })),
       ]);
       setStats({
         documents: d.count ?? 0,
