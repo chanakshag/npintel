@@ -281,7 +281,6 @@ export default function Landing() {
               return (
                 <div key={f.title} className="grid gap-10 lg:grid-cols-2 lg:items-center">
                   <div className={reverse ? "lg:order-2" : ""}>
-                    <div className="font-mono text-sm font-semibold text-primary">[{f.num}]</div>
                     <h3 className="mt-2 text-2xl font-bold tracking-tight text-navy md:text-3xl">{f.title}</h3>
                     <p className="mt-4 text-base leading-relaxed text-slate-600">{f.desc}</p>
                   </div>
