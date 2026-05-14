@@ -249,6 +249,8 @@ const Gates = () => {
             <p className="mt-1 text-xs text-muted-foreground">Create a new package to get started.</p>
           </Card>
         )}
+        </div>
+        )}
       </div>
     </AppLayout>
   );
