@@ -67,7 +67,8 @@ const Traceability = () => {
 
   const addLink = async () => {
     if (!user || !linkFrom || !linkTo || linkFrom === linkTo) return toast.error("Pick two different requirements");
-    const { error } = await supabase.from("trace_links").insert({ user_id: user.id, from_req: linkFrom, to_req: linkTo, link_type: linkType });
+    if (!projectId) return toast.error("Open a project first");
+    const { error } = await supabase.from("trace_links").insert({ user_id: user.id, from_req: linkFrom, to_req: linkTo, link_type: linkType, project_id: projectId });
     if (error) return toast.error(error.message);
     toast.success("Trace link added");
     setLinkOpen(false); setLinkFrom(""); setLinkTo("");

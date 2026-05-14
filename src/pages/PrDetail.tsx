@@ -240,8 +240,10 @@ function ExistingPr({ prId }: { prId: string }) {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return;
     const rfq_number = `RFQ-${Date.now().toString(36).toUpperCase()}`;
+    if (!pr?.project_id) return toast.error("PR has no project");
     await supabase.from("rfqs").insert({
       pr_id: prId, user_id: u.user.id, supplier_id: rfqDraft.supplier_id,
+      project_id: pr.project_id,
       subject: rfqDraft.subject, body: rfqDraft.body, status, rfq_number,
       sent_at: status === "sent" ? new Date().toISOString() : null,
     });
@@ -261,8 +263,10 @@ function ExistingPr({ prId }: { prId: string }) {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return;
     const po_number = `PO-${Date.now().toString(36).toUpperCase()}`;
+    if (!pr?.project_id) return toast.error("PR has no project");
     await supabase.from("purchase_orders").insert({
       pr_id: prId, rfq_id: rfq.id, supplier_id: rfq.supplier_id, user_id: u.user.id,
+      project_id: pr.project_id,
       po_number, total_amount: rfq.quoted_price, delivery_date: poDraft.delivery_date || null,
       npi_gate: pr?.npi_gate, notes: poDraft.notes,
     });

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/AppLayout";
@@ -27,6 +28,8 @@ const GATE_DESC: Record<string, string> = {
 
 const Gates = () => {
   const { user } = useAuth();
+  const location = useLocation();
+  const projectId = useMemo(() => new URLSearchParams(location.search).get("project_id"), [location.search]);
   const [gates, setGates] = useState<Gate[]>([]);
   const [open, setOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -35,14 +38,17 @@ const Gates = () => {
   const [active, setActive] = useState<string | null>(null);
 
   const load = async () => {
-    const { data } = await supabase.from("gate_reviews").select("*").order("created_at", { ascending: false });
+    let q = supabase.from("gate_reviews").select("*").order("created_at", { ascending: false });
+    if (projectId) q = q.eq("project_id", projectId);
+    const { data } = await q;
     setGates((data as any) ?? []);
     if (!active && data && data.length) setActive((data[0] as any).id);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [projectId]);
 
   const create = async () => {
     if (!user || !name.trim()) return toast.error("Name required");
+    if (!projectId) return toast.error("Open a project first");
     setGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-gate-checklist", {
@@ -52,7 +58,7 @@ const Gates = () => {
       const checklist = data?.checklist ?? [];
       const { data: row, error: insErr } = await supabase
         .from("gate_reviews")
-        .insert({ user_id: user.id, name, gate_type: type, checklist, status: "in_progress" })
+        .insert({ user_id: user.id, project_id: projectId, name, gate_type: type, checklist, status: "in_progress" })
         .select().single();
       if (insErr) throw insErr;
       toast.success(`Generated ${checklist.length} checklist items`);
