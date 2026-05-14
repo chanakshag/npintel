@@ -16,6 +16,9 @@ import Changes from "./pages/Changes";
 import Knowledge from "./pages/Knowledge";
 import Projects from "./pages/Projects";
 import Workflow from "./pages/Workflow";
+import BomIntel from "./pages/BomIntel";
+import SupplyIntel from "./pages/SupplyIntel";
+import ProcureIntel from "./pages/ProcureIntel";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
