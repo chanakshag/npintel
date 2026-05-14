@@ -5,6 +5,7 @@ import {
   Cpu, FileText, GitBranch, MessagesSquare, ClipboardCheck, GitCompare,
   ArrowRight, Clock, Unlink, UserMinus, AlertTriangle, FileWarning, TrendingDown,
   CheckCircle2, Zap, Workflow, Linkedin, Mail, CircuitBoard,
+  Layers, Truck, ShoppingCart,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
