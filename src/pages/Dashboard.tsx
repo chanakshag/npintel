@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FileText, GitBranch, ClipboardCheck, MessagesSquare, ArrowUpRight, Cpu, Activity } from "lucide-react";
+import { FileText, GitBranch, ClipboardCheck, MessagesSquare, ArrowUpRight, Cpu, Activity, Layers, Truck, ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type Stats = {
   documents: number;
