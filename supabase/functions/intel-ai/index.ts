@@ -204,12 +204,12 @@ serve(async (req) => {
       method: "POST",
       headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: task === "prd_generate" ? "google/gemini-2.5-pro" : "google/gemini-3-flash-preview",
+        model: (task === "prd_generate" || task === "requirements_extract") ? "google/gemini-2.5-pro" : "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: "You are an expert supply chain & procurement assistant for hardware NPI teams. Be precise, terse, and engineering-focused." },
           { role: "user", content: prompt },
         ],
-        max_tokens: task === "prd_generate" ? 8000 : 4000,
+        max_tokens: task === "prd_generate" ? 8000 : task === "requirements_extract" ? 8000 : 4000,
       }),
     });
 
