@@ -6,17 +6,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
+import { useProject } from "@/hooks/useProject";
 
 const COLORS = ["#0D9488", "#0D1B3E", "#14B8A6", "#6366F1", "#F59E0B", "#EF4444", "#22C55E", "#A855F7"];
 
 export default function SpendAnalytics() {
+  const { projectId, project } = useProject();
   const [pos, setPos] = useState<any[]>([]);
   const [rfqs, setRfqs] = useState<any[]>([]);
 
   useEffect(() => {
-    supabase.from("purchase_orders").select("*, suppliers(name)").then(({ data }) => setPos(data ?? []));
-    supabase.from("rfqs").select("quoted_price, supplier_id, status").then(({ data }) => setRfqs(data ?? []));
-  }, []);
+    if (!projectId) return;
+    supabase.from("purchase_orders").select("*, suppliers(name)").eq("project_id", projectId)
+      .then(({ data }) => setPos(data ?? []));
+    supabase.from("rfqs").select("quoted_price, supplier_id, status").eq("project_id", projectId)
+      .then(({ data }) => setRfqs(data ?? []));
+  }, [projectId]);
 
   const monthly = useMemo(() => {
     const buckets: Record<string, number> = {};
@@ -45,10 +51,20 @@ export default function SpendAnalytics() {
   const totalSpend = pos.reduce((s, p) => s + Number(p.total_amount ?? 0), 0);
   const totalQuoted = rfqs.filter(r => r.status === "accepted").reduce((s, r) => s + Number(r.quoted_price ?? 0), 0);
 
+  if (!projectId) {
+    return (
+      <AppLayout title="Spend Analytics" description="Procurement spend breakdown">
+        <NoProjectGuard hard message="Spend analytics are scoped to a project. Open a project from the Projects page." />
+      </AppLayout>
+    );
+  }
+  const backHref = `/procurement?project_id=${projectId}`;
+
   return (
-    <AppLayout title="Spend Analytics" description="Procurement spend breakdown by supplier, gate, and time"
-      actions={<Link to="/procurement"><Button size="sm" variant="ghost"><ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back</Button></Link>}>
+    <AppLayout title="Spend Analytics" description={project ? `Project: ${project.name}` : "Procurement spend breakdown"}
+      actions={<Link to={backHref}><Button size="sm" variant="ghost"><ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back</Button></Link>}>
       <div className="mx-auto max-w-7xl space-y-6">
+        <ProjectBreadcrumb project={project} currentPage="Spend Analytics" />
         <div className="grid gap-3 md:grid-cols-3">
           <Card className="border-border/60 p-4"><p className="text-xs text-muted-foreground">Total spend</p><p className="mt-1 font-mono text-2xl font-semibold">${totalSpend.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p></Card>
           <Card className="border-border/60 p-4"><p className="text-xs text-muted-foreground">Total quoted</p><p className="mt-1 font-mono text-2xl font-semibold">${totalQuoted.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p></Card>

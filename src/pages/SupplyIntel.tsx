@@ -11,10 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { statusBadge, severityBadge, riskColor } from "@/lib/intel";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
+import { useProject } from "@/hooks/useProject";
 
 export default function SupplyIntel() {
-  const location = useLocation();
-  const projectId = new URLSearchParams(location.search).get("project_id");
+  const { projectId, project } = useProject();
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [risks, setRisks] = useState<any[]>([]);
   const [stats, setStats] = useState({ total: 0, qualified: 0, openRisks: 0, atRiskLT: 0 });
@@ -22,12 +23,11 @@ export default function SupplyIntel() {
   const [draft, setDraft] = useState<any>({ name: "", category: "component", country: "", contact_email: "" });
 
   const load = async () => {
-    let sq = supabase.from("suppliers").select("*").order("created_at", { ascending: false });
-    if (projectId) sq = sq.eq("project_id", projectId);
+    if (!projectId) return;
     const [{ data: s }, { data: r }, { data: lt }] = await Promise.all([
-      sq,
-      supabase.from("supply_risks").select("*, suppliers(name)").eq("status", "open").order("flagged_at", { ascending: false }).limit(15),
-      supabase.from("lead_time_entries").select("status").neq("status", "on_track"),
+      supabase.from("suppliers").select("*").eq("project_id", projectId).order("created_at", { ascending: false }),
+      supabase.from("supply_risks").select("*, suppliers(name)").eq("project_id", projectId).eq("status", "open").order("flagged_at", { ascending: false }).limit(15),
+      supabase.from("lead_time_entries").select("status").eq("project_id", projectId).neq("status", "on_track"),
     ]);
     setSuppliers(s ?? []); setRisks(r ?? []);
     setStats({
@@ -41,9 +41,10 @@ export default function SupplyIntel() {
 
   const create = async () => {
     if (!draft.name?.trim()) return;
+    if (!projectId) return toast.error("Open a project first");
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return;
-    const { error } = await supabase.from("suppliers").insert({ ...draft, user_id: u.user.id, project_id: projectId ?? null });
+    const { error } = await supabase.from("suppliers").insert({ ...draft, user_id: u.user.id, project_id: projectId });
     if (error) return toast.error(error.message);
     toast.success("Supplier added"); setOpen(false); setDraft({ name: "", category: "component", country: "", contact_email: "" });
     load();
@@ -56,8 +57,16 @@ export default function SupplyIntel() {
     { label: "At-risk lead times", value: stats.atRiskLT, icon: Clock },
   ];
 
+  if (!projectId) {
+    return (
+      <AppLayout title="Supply Intel" description="Supplier qualification & supply chain risk">
+        <NoProjectGuard hard message="Suppliers are organized by project. Open a project from the Projects page to manage suppliers." />
+      </AppLayout>
+    );
+  }
+
   return (
-    <AppLayout title="Supply Intel" description="Supplier qualification automation and supply chain risk monitoring"
+    <AppLayout title="Supply Intel" description={project ? `Project: ${project.name}` : "Supplier qualification automation"}
       actions={
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90"><Plus className="mr-1 h-3.5 w-3.5" /> Add Supplier</Button></DialogTrigger>
@@ -84,12 +93,7 @@ export default function SupplyIntel() {
         </Dialog>
       }>
       <div className="mx-auto max-w-7xl space-y-6">
-        {projectId && (
-          <div className="flex items-center gap-2 text-xs">
-            <Link to={`/projects/${projectId}`} className="text-primary hover:underline">← Back to project</Link>
-            <span className="text-muted-foreground">· Filtered to this project</span>
-          </div>
-        )}
+        <ProjectBreadcrumb project={project} currentPage="Suppliers" />
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {tiles.map(t => (
             <Card key={t.label} className="border-border/60 p-4">

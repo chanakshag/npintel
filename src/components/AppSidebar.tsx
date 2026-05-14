@@ -1,4 +1,5 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation, useParams, Link } from "react-router-dom";
 import {
   LayoutDashboard, FileText, GitBranch, MessagesSquare, GitCompare, ClipboardCheck, LogOut, Cpu, BookOpen, Workflow,
   Layers, Truck, ShoppingCart, BarChart3, FolderOpen,
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 const topItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -35,8 +37,19 @@ const platformGroups = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname } = location;
   const { user, signOut } = useAuth();
+  const params = useParams<{ projectId?: string }>();
+  const queryProjectId = new URLSearchParams(location.search).get("project_id");
+  const activeProjectId = params.projectId ?? queryProjectId ?? null;
+  const [activeProjectName, setActiveProjectName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!activeProjectId) { setActiveProjectName(null); return; }
+    supabase.from("projects").select("name").eq("id", activeProjectId).maybeSingle()
+      .then(({ data }) => setActiveProjectName((data as any)?.name ?? null));
+  }, [activeProjectId]);
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
@@ -53,6 +66,15 @@ export function AppSidebar() {
           )}
         </div>
       </SidebarHeader>
+
+      {activeProjectId && activeProjectName && !collapsed && (
+        <div className="border-b border-sidebar-border px-3 py-3">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Active project</p>
+          <Link to={`/projects/${activeProjectId}`} className="mt-1 line-clamp-2 block text-xs font-semibold text-primary hover:underline">
+            {activeProjectName}
+          </Link>
+        </div>
+      )}
 
       <SidebarContent>
         <SidebarGroup>
