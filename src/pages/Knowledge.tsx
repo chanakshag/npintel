@@ -17,6 +17,8 @@ import {
   BookOpen, Upload, Loader2, Trash2, Sparkles, Search, FileText, Wand2, Download, Library, Tag, FileType, FileDown,
 } from "lucide-react";
 import { downloadMarkdown, downloadPdf, downloadDocx } from "@/lib/exportArtifact";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
 
 type Source = {
@@ -418,9 +420,12 @@ const Knowledge = () => {
                           <Loader2 className="h-5 w-5 animate-spin text-primary" />
                         </div>
                       ) : (
-                        <pre className="whitespace-pre-wrap font-sans text-[13px] leading-relaxed text-foreground/90">
-                          {activeArtifact.content || "(empty)"}
-                        </pre>
+                        <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-headings:text-foreground prose-h1:text-xl prose-h1:mt-5 prose-h1:mb-3 prose-h1:pb-1.5 prose-h1:border-b prose-h1:border-border prose-h2:text-base prose-h2:mt-4 prose-h2:mb-2 prose-h2:pb-1 prose-h2:border-b prose-h2:border-border/60 prose-h3:text-sm prose-h3:mt-3 prose-h3:mb-1.5 prose-p:my-2 prose-p:text-[13px] prose-p:leading-relaxed prose-li:text-[13px] prose-li:my-0.5 prose-ul:my-2 prose-ol:my-2 prose-strong:font-semibold prose-strong:text-foreground prose-code:text-xs prose-code:bg-secondary prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-table:text-[13px] prose-th:px-2 prose-th:py-1 prose-td:px-2 prose-td:py-1 prose-a:text-primary">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {(activeArtifact.content || "(empty)")
+                              .replace(/^#{5,}\s+/gm, "#### ")}
+                          </ReactMarkdown>
+                        </div>
                       )}
                     </div>
                   )}
