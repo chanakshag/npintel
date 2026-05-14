@@ -36,12 +36,12 @@ const impact = [
 ];
 
 const features = [
-  { num: "01", icon: FileText, title: "Auto-Documentation", desc: "AI generates living specs, test reports, and gate review packages from structured and unstructured inputs — PRDs, meeting notes, test CSVs, supplier emails." },
-  { num: "02", icon: GitBranch, title: "Full Requirements Traceability", desc: "Every requirement linked to a design decision, linked to a test result, linked to a supplier qualification. Visual graph. Red/amber/green gate status. No broken links at review time." },
-  { num: "03", icon: MessagesSquare, title: "Research Synthesis", desc: "Upload datasheets, technical papers, and past project reports. Ask in plain English: \"Which supplier meets our thermal spec?\" — get cited, source-linked answers instantly." },
-  { num: "04", icon: GitCompare, title: "Change Propagation", desc: "Log a component change. Spectir immediately maps every downstream document, traceability link, and sign-off that needs updating. Assign tasks. Close the loop." },
-  { num: "05", icon: ClipboardCheck, title: "Gate Review Assistant", desc: "Select your gate type — EVT, DVT, PVT, PDR, CDR. AI generates the checklist based on your product and regulatory standard. Track completion. Export the full package." },
-  { num: "06", icon: Workflow, title: "NPI Workflow Builder", desc: "Build your full NPI program phase by phase — from requirements definition to pilot production. AI tailors tasks, outputs, and gate criteria to your specific product and industry." },
+  { icon: FileText, title: "Auto-Documentation", desc: "AI generates living specs, test reports, and gate review packages from structured and unstructured inputs — PRDs, meeting notes, test CSVs, supplier emails." },
+  { icon: GitBranch, title: "Full Requirements Traceability", desc: "Every requirement linked to a design decision, linked to a test result, linked to a supplier qualification. Visual graph. Red/amber/green gate status. No broken links at review time." },
+  { icon: MessagesSquare, title: "Research Synthesis", desc: "Upload datasheets, technical papers, and past project reports. Ask in plain English: \"Which supplier meets our thermal spec?\" — get cited, source-linked answers instantly." },
+  { icon: GitCompare, title: "Change Propagation", desc: "Log a component change. Spectir immediately maps every downstream document, traceability link, and sign-off that needs updating. Assign tasks. Close the loop." },
+  { icon: ClipboardCheck, title: "Gate Review Assistant", desc: "Select your gate type — EVT, DVT, PVT, PDR, CDR. AI generates the checklist based on your product and regulatory standard. Track completion. Export the full package." },
+  { icon: Workflow, title: "NPI Workflow Builder", desc: "Build your full NPI program phase by phase — from requirements definition to pilot production. AI tailors tasks, outputs, and gate criteria to your specific product and industry." },
 ];
 
 const verticals = [
@@ -279,9 +279,8 @@ export default function Landing() {
             {features.map((f, i) => {
               const reverse = i % 2 === 1;
               return (
-                <div key={f.num} className="grid gap-10 lg:grid-cols-2 lg:items-center">
+                <div key={f.title} className="grid gap-10 lg:grid-cols-2 lg:items-center">
                   <div className={reverse ? "lg:order-2" : ""}>
-                    <div className="font-mono text-sm font-semibold text-primary">[{f.num}]</div>
                     <h3 className="mt-2 text-2xl font-bold tracking-tight text-navy md:text-3xl">{f.title}</h3>
                     <p className="mt-4 text-base leading-relaxed text-slate-600">{f.desc}</p>
                   </div>
