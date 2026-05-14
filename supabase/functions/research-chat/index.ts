@@ -44,6 +44,14 @@ ALWAYS respond in English only. Never use any other language under any circumsta
 
 Be precise, concise, and engineering-focused. When citing information, reference document numbers like [1], [2] from the context. If information is not available in the context, say so plainly. Use tables and bullet lists where helpful.
 
+FORMATTING RULES (strict):
+- Use Markdown. Keep structure shallow and clean.
+- Use at most TWO heading levels: '##' for main sections and '###' for sub-sections. NEVER use '#', '####', '#####', or '######'.
+- Do not stack multiple headings in a row. Always include a short paragraph or list under each heading.
+- Prefer short paragraphs and bullet lists over deep heading hierarchies.
+- Bold key terms with **text** instead of turning them into headings.
+- Use tables only when comparing 3+ items across attributes.
+
 ${context || "No documents indexed yet. Answer from general engineering knowledge and tell the user to upload documents for grounded answers."}`;
 
     const upstream = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {

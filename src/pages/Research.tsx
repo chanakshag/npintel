@@ -175,7 +175,7 @@ const Research = () => {
                 )}
                 <Card className={`max-w-[80%] border-border/60 px-3.5 py-2.5 ${m.role === "user" ? "bg-primary/10" : ""}`}>
                   {m.role === "assistant" ? (
-                    <div className="prose prose-sm max-w-none prose-headings:mt-3 prose-headings:mb-2 prose-headings:font-semibold prose-h1:text-base prose-h2:text-sm prose-h3:text-sm prose-p:my-2 prose-p:text-sm prose-p:leading-relaxed prose-li:text-sm prose-li:my-0.5 prose-ul:my-2 prose-ol:my-2 prose-strong:font-semibold prose-code:text-xs prose-code:bg-secondary prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-table:text-sm prose-th:px-2 prose-th:py-1 prose-td:px-2 prose-td:py-1 prose-a:text-primary">
+                    <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-headings:text-foreground prose-h1:hidden prose-h2:text-base prose-h2:mt-4 prose-h2:mb-2 prose-h2:pb-1 prose-h2:border-b prose-h2:border-border/60 prose-h3:text-sm prose-h3:mt-3 prose-h3:mb-1.5 prose-h4:text-sm prose-h4:mt-2 prose-h4:mb-1 prose-h5:hidden prose-h6:hidden prose-p:my-2 prose-p:text-sm prose-p:leading-relaxed prose-li:text-sm prose-li:my-0.5 prose-ul:my-2 prose-ol:my-2 prose-strong:font-semibold prose-strong:text-foreground prose-code:text-xs prose-code:bg-secondary prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-table:text-sm prose-th:px-2 prose-th:py-1 prose-td:px-2 prose-td:py-1 prose-a:text-primary">
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
                     </div>
                   ) : (
