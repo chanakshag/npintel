@@ -149,7 +149,12 @@ const Gates = () => {
         </Dialog>
       }
     >
-      <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[280px_1fr]">
+      <div className="mx-auto max-w-7xl space-y-4">
+        <ProjectBreadcrumb project={project} currentPage="Gate reviews" />
+        {!projectId ? (
+          <NoProjectGuard message="Gate reviews live inside a project. Pick a project to view or create EVT/DVT/PVT/PDR/CDR packages." hard />
+        ) : (
+        <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
         {/* List */}
         <Card className="border-border/60 p-2 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto">
           {gates.length === 0 ? (
