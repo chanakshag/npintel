@@ -17,9 +17,9 @@
     --popover-foreground: 222 55% 10%;
 
     /* Brand */
-    --primary: 173 80% 32%;            /* teal #0F766E */
+    --primary: 172 84% 32%;            /* teal #0D9488 */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 172 66% 50%;       /* teal light #14B8A6 */
+    --primary-glow: 172 79% 40%;       /* light teal #14B8A6 */
 
     --navy: 222 65% 14%;               /* deep navy #0D1B3E */
     --navy-foreground: 210 40% 96%;
