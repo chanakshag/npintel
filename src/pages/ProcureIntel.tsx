@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Plus, BarChart3, ShoppingCart, FileText, Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppLayout } from "@/components/AppLayout";
@@ -17,13 +17,17 @@ const STAGES = [
 ];
 
 export default function ProcureIntel() {
+  const location = useLocation();
+  const projectId = new URLSearchParams(location.search).get("project_id");
   const [prs, setPrs] = useState<any[]>([]);
   const [stats, setStats] = useState({ openPrs: 0, monthSpend: 0, openRfqs: 0, posPending: 0 });
 
   const load = async () => {
     const monthStart = new Date(); monthStart.setDate(1);
+    let prq = supabase.from("purchase_requisitions").select("*, pr_items(quantity, unit_cost)").order("updated_at", { ascending: false });
+    if (projectId) prq = prq.eq("project_id", projectId);
     const [{ data: prData }, { data: rfqs }, { data: pos }] = await Promise.all([
-      supabase.from("purchase_requisitions").select("*, pr_items(quantity, unit_cost)").order("updated_at", { ascending: false }),
+      prq,
       supabase.from("rfqs").select("status").in("status", ["draft", "sent"]),
       supabase.from("purchase_orders").select("total_amount, created_at, status"),
     ]);
@@ -35,7 +39,7 @@ export default function ProcureIntel() {
       posPending: (pos ?? []).filter(p => p.status === "raised").length,
     });
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [projectId]);
 
   const itemsCount = (pr: any) => (pr.pr_items ?? []).length;
   const estCost = (pr: any) => (pr.pr_items ?? []).reduce((s: number, i: any) => s + Number(i.quantity ?? 0) * Number(i.unit_cost ?? 0), 0) || pr.total_estimated_cost || 0;
@@ -72,6 +76,12 @@ export default function ProcureIntel() {
         </div>
       }>
       <div className="mx-auto max-w-7xl space-y-6">
+        {projectId && (
+          <div className="flex items-center gap-2 text-xs">
+            <Link to={`/projects/${projectId}`} className="text-primary hover:underline">← Back to project</Link>
+            <span className="text-muted-foreground">· Filtered to this project</span>
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {tiles.map(t => (
             <Card key={t.label} className="border-border/60 p-4">

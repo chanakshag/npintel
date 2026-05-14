@@ -71,6 +71,32 @@ Notes: ${p.notes ?? "—"}
 
 Use only '##' / '###' headings. Sections: ## Purchase Order, ## Supplier, ## Line Items (table), ## Terms & Conditions (standard NPI procurement boilerplate), ## Acknowledgement.`,
 
+  prd_generate: (p) => `You are an expert hardware product manager. Generate a comprehensive Product Requirements Document (PRD) for a ${p.product_description} in the ${p.industry} industry following ${p.gate_standard} standards.
+
+Use these extracted requirements as the basis:
+${(p.requirements ?? []).map((r: any) => `- ${r.ref_id ?? ""} ${r.title}${r.description ? `: ${r.description}` : ""}`).join("\n") || "(no requirements extracted yet — infer reasonable defaults from the product description)"}
+
+Use ONLY '##' / '###' headings (never '#'). Structure the PRD with these sections:
+## Executive Summary
+## Product Overview
+## Functional Requirements
+## Non-Functional Requirements
+## Technical Constraints
+## Regulatory Requirements
+## Success Criteria
+## Open Questions
+
+Be specific and engineering-grade. ~800-1200 words.`,
+
+  bom_from_prd: (p) => `Based on this PRD for a ${p.product_description}:
+
+${p.prdContent}
+
+Suggest an initial Bill of Materials. Return STRICT JSON only (no markdown, no code fences). Schema:
+{ "items": [ { "part_number": "string (suggested)", "description": "string", "manufacturer": "string", "supplier": "string", "quantity": number, "unit": "ea", "unit_cost": number, "lead_time_days": number, "notes": "string (regulatory or sourcing note)" } ] }
+
+Return 8-20 realistic components.`,
+
   qual_package: (p) => `Generate a formal Supplier Qualification Package in markdown.
 
 Supplier: ${p.supplier.name} (${p.supplier.category ?? ""}, ${p.supplier.country ?? ""})

@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, FileText, GitBranch, MessagesSquare, GitCompare, ClipboardCheck, LogOut, Cpu, BookOpen, Workflow,
-  Layers, Truck, ShoppingCart, BarChart3,
+  Layers, Truck, ShoppingCart, BarChart3, FolderOpen,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader,
@@ -10,23 +10,25 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 
-const items = [
+const topItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Projects", url: "/projects", icon: Workflow },
-  { title: "Documents", url: "/documents", icon: FileText },
-  { title: "Knowledge Board", url: "/knowledge", icon: BookOpen },
-  { title: "Traceability", url: "/traceability", icon: GitBranch },
-  { title: "Research", url: "/research", icon: MessagesSquare },
-  { title: "Change Log", url: "/changes", icon: GitCompare },
-  { title: "Gate Reviews", url: "/gates", icon: ClipboardCheck },
+  { title: "Projects", url: "/projects", icon: FolderOpen },
 ];
 
 const platformGroups = [
+  { label: "NPI Intel", items: [
+    { title: "Documents", url: "/documents", icon: FileText },
+    { title: "Knowledge Board", url: "/knowledge", icon: BookOpen },
+    { title: "Traceability", url: "/traceability", icon: GitBranch },
+    { title: "Research", url: "/research", icon: MessagesSquare },
+    { title: "Gate Reviews", url: "/gates", icon: ClipboardCheck },
+    { title: "Changes", url: "/changes", icon: GitCompare },
+  ]},
   { label: "BOM Intel", items: [{ title: "BOMs", url: "/bom", icon: Layers }] },
   { label: "Supply Intel", items: [{ title: "Suppliers", url: "/supply", icon: Truck }] },
   { label: "Procure Intel", items: [
     { title: "Procurement", url: "/procurement", icon: ShoppingCart },
-    { title: "Spend", url: "/procurement/spend", icon: BarChart3 },
+    { title: "Spend Analytics", url: "/procurement/spend", icon: BarChart3 },
   ]},
 ];
 
@@ -56,7 +58,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => {
+              {topItems.map((item) => {
                 const active = pathname === item.url;
                 return (
                   <SidebarMenuItem key={item.title}>

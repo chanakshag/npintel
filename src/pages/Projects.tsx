@@ -113,7 +113,7 @@ export default function Projects() {
       if (fnErr) throw fnErr;
       setOpen(false);
       setForm({ name: "", product_description: "", industry: "", gate_standard: "" });
-      navigate(`/workflow/${project.id}`);
+      navigate(`/projects/${project.id}`);
     } catch (e: any) {
       toast.error(e.message ?? "Failed to create project");
     } finally {
@@ -143,7 +143,7 @@ export default function Projects() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {projects.map(p => (
-            <Card key={p.id} className="group relative cursor-pointer transition-shadow hover:shadow-md" onClick={() => navigate(`/workflow/${p.id}`)}>
+            <Card key={p.id} className="group relative cursor-pointer transition-shadow hover:shadow-md" onClick={() => navigate(`/projects/${p.id}`)}>
               <CardContent className="space-y-3 p-5">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-semibold leading-tight">{p.name}</h3>

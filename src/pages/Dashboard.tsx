@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FileText, GitBranch, ClipboardCheck, MessagesSquare, ArrowUpRight, Cpu, Activity, Layers, Truck, ShoppingCart } from "lucide-react";
+import { FileText, GitBranch, ClipboardCheck, MessagesSquare, ArrowUpRight, Cpu, Activity, Layers, Truck, ShoppingCart, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Stats = {
@@ -68,8 +68,7 @@ const Dashboard = () => {
                 <Badge variant="secondary" className="mb-2 text-[10px] font-medium uppercase tracking-wider">NPI Agent · Online</Badge>
                 <h2 className="text-xl font-semibold tracking-tight">Your engineering knowledge base, automated.</h2>
                 <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-                  Upload datasheets, PRDs, and test reports — the agent extracts requirements, builds traceability,
-                  and generates gate review packages.
+                  Create a project → upload documents → extract requirements → generate PRD → build BOM → qualify suppliers → raise POs. One workflow, end to end.
                 </p>
               </div>
             </div>
@@ -180,6 +179,7 @@ const Dashboard = () => {
             <h3 className="mb-3 text-sm font-semibold">Quick actions</h3>
             <div className="space-y-2">
               {[
+                { to: "/projects", icon: FolderOpen, label: "Start a new project", hint: "Full NPI workflow — docs to POs" },
                 { to: "/documents", icon: FileText, label: "Upload a document", hint: "PDF, DOCX, XLSX" },
                 { to: "/research", icon: MessagesSquare, label: "Ask the agent", hint: "Search your knowledge base" },
                 { to: "/gates", icon: ClipboardCheck, label: "New gate review", hint: "EVT / DVT / PVT / PDR / CDR" },

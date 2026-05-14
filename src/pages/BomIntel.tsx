@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Layers, Plus, ArrowUpRight, Package, AlertTriangle, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,13 +14,17 @@ import { statusBadge } from "@/lib/intel";
 type Bom = { id: string; name: string; version: string; status: string; updated_at: string };
 
 export default function BomIntel() {
+  const location = useLocation();
+  const projectId = new URLSearchParams(location.search).get("project_id");
   const [boms, setBoms] = useState<Bom[]>([]);
   const [stats, setStats] = useState({ total: 0, components: 0, atRisk: 0, cost: 0 });
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
 
   const load = async () => {
-    const { data: bomList } = await supabase.from("boms").select("id,name,version,status,updated_at").order("updated_at", { ascending: false });
+    let bq = supabase.from("boms").select("id,name,version,status,updated_at").order("updated_at", { ascending: false });
+    if (projectId) bq = bq.eq("project_id", projectId);
+    const { data: bomList } = await bq;
     const { data: items } = await supabase.from("bom_items").select("status,unit_cost,quantity");
     setBoms(bomList ?? []);
     const cost = (items ?? []).reduce((s, i: any) => s + (Number(i.unit_cost ?? 0) * Number(i.quantity ?? 0)), 0);
@@ -28,13 +32,13 @@ export default function BomIntel() {
     setStats({ total: bomList?.length ?? 0, components: items?.length ?? 0, atRisk, cost });
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [projectId]);
 
   const create = async () => {
     if (!name.trim()) return;
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return;
-    const { data, error } = await supabase.from("boms").insert({ name, user_id: u.user.id }).select().single();
+    const { data, error } = await supabase.from("boms").insert({ name, user_id: u.user.id, project_id: projectId ?? null }).select().single();
     if (error) return toast.error(error.message);
     toast.success("BOM created");
     setOpen(false); setName("");
@@ -68,6 +72,12 @@ export default function BomIntel() {
       }
     >
       <div className="mx-auto max-w-7xl space-y-6">
+        {projectId && (
+          <div className="flex items-center gap-2 text-xs">
+            <Link to={`/projects/${projectId}`} className="text-primary hover:underline">← Back to project</Link>
+            <span className="text-muted-foreground">· Filtered to this project</span>
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {tiles.map(t => (
             <Card key={t.label} className="border-border/60 p-4">

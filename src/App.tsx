@@ -15,6 +15,7 @@ import Gates from "./pages/Gates";
 import Changes from "./pages/Changes";
 import Knowledge from "./pages/Knowledge";
 import Projects from "./pages/Projects";
+import ProjectHub from "./pages/ProjectHub";
 import Workflow from "./pages/Workflow";
 import BomIntel from "./pages/BomIntel";
 import BomDetail from "./pages/BomDetail";
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/research" element={<ProtectedRoute><Research /></ProtectedRoute>} />
             <Route path="/knowledge" element={<ProtectedRoute><Knowledge /></ProtectedRoute>} />
             <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
+            <Route path="/projects/:projectId" element={<ProtectedRoute><ProjectHub /></ProtectedRoute>} />
             <Route path="/workflow/:projectId" element={<ProtectedRoute><Workflow /></ProtectedRoute>} />
             <Route path="/changes" element={<ProtectedRoute><Changes /></ProtectedRoute>} />
             <Route path="/gates" element={<ProtectedRoute><Gates /></ProtectedRoute>} />
