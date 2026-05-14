@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { FileText, Upload, Loader2, Trash2, Sparkles, Search, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
+import { useProject } from "@/hooks/useProject";
 
 type Doc = {
   id: string;
@@ -24,8 +26,7 @@ type Doc = {
 
 const Documents = () => {
   const { user } = useAuth();
-  const location = useLocation();
-  const projectId = useMemo(() => new URLSearchParams(location.search).get("project_id"), [location.search]);
+  const { projectId, project } = useProject();
   const [docs, setDocs] = useState<Doc[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -46,6 +47,7 @@ const Documents = () => {
 
   const handleUpload = async (file: File) => {
     if (!user) return;
+    if (!projectId) { toast.error("Open a project first before uploading"); return; }
     setUploading(true);
     try {
       const ext = file.name.split(".").pop();
@@ -57,7 +59,7 @@ const Documents = () => {
         .from("documents")
         .insert({
           user_id: user.id,
-          project_id: projectId ?? null,
+          project_id: projectId,
           name: file.name,
           file_path: path,
           mime_type: file.type,
@@ -142,11 +144,10 @@ const Documents = () => {
       />
 
       <div className="mx-auto max-w-7xl space-y-4">
-        {projectId && (
-          <div className="flex items-center gap-2 text-xs">
-            <Link to={`/projects/${projectId}`} className="text-primary hover:underline">← Back to project</Link>
-            <span className="text-muted-foreground">· Filtered to this project</span>
-          </div>
+        {projectId ? (
+          <ProjectBreadcrumb project={project} currentPage="Documents" />
+        ) : (
+          <NoProjectGuard message="Documents are organized by project. Open a project to view and upload its documents." />
         )}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
