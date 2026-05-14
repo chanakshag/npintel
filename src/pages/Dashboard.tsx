@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FileText, GitBranch, ClipboardCheck, MessagesSquare, ArrowUpRight, Cpu, Activity } from "lucide-react";
+import { FileText, GitBranch, ClipboardCheck, MessagesSquare, ArrowUpRight, Cpu, Activity, Layers, Truck, ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type Stats = {
   documents: number;
@@ -82,6 +83,59 @@ const Dashboard = () => {
               </Card>
             </Link>
           ))}
+        </div>
+
+        {/* Platform products */}
+        <div>
+          <h2 className="mb-3 text-lg font-semibold text-navy">The Spectir Platform</h2>
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+            {[
+              {
+                name: "NPI Intel", icon: Cpu, active: true, to: "/projects",
+                desc: "AI documentation, traceability & gate reviews",
+                stat: `${stats.documents} documents · ${stats.gates} gate reviews`,
+              },
+              {
+                name: "BOM Intel", icon: Layers, active: false, to: "/bom",
+                desc: "Bill of materials intelligence & component risk",
+                stat: "BOM versioning · EOL detection",
+              },
+              {
+                name: "Supply Intel", icon: Truck, active: false, to: "/supply",
+                desc: "Supplier qualification & supply chain risk",
+                stat: "Qualification packages · Lead tracking",
+              },
+              {
+                name: "Procure Intel", icon: ShoppingCart, active: false, to: "/procurement",
+                desc: "Procurement automation, PRs & POs",
+                stat: "Auto-PRs · RFQ drafting · PO tracking",
+              },
+            ].map(p => (
+              <Card key={p.name} className="relative overflow-hidden border-border/60 p-5 transition-colors hover:border-primary/40">
+                <div className="absolute left-0 top-0 h-full w-1 rounded-full bg-primary" />
+                <div className="flex items-start justify-between">
+                  <p.icon className={`h-5 w-5 ${p.active ? "text-primary" : "text-slate-400"}`} />
+                  {p.active ? (
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-700">Active</span>
+                  ) : (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-700">Coming Soon</span>
+                  )}
+                </div>
+                <h3 className="mt-3 text-sm font-semibold text-navy">{p.name}</h3>
+                <p className="mt-1 text-xs text-muted-foreground">{p.desc}</p>
+                <p className={`mt-3 text-[11px] ${p.active ? "text-slate-600" : "text-slate-400"}`}>{p.stat}</p>
+                {p.active ? (
+                  <Button asChild size="sm" className="mt-4 w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Link to={p.to}>Open <ArrowUpRight className="ml-1 h-3.5 w-3.5" /></Link>
+                  </Button>
+                ) : (
+                  <Button asChild size="sm" variant="outline" className="mt-4 w-full border-navy/20 text-navy opacity-70 hover:bg-navy/5">
+                    <Link to={p.to}>Join Waitlist</Link>
+                  </Button>
+                )}
+              </Card>
+            ))}
+          </div>
         </div>
 
         {/* Recent activity + quick actions */}

@@ -5,6 +5,7 @@ import {
   Cpu, FileText, GitBranch, MessagesSquare, ClipboardCheck, GitCompare,
   ArrowRight, Clock, Unlink, UserMinus, AlertTriangle, FileWarning, TrendingDown,
   CheckCircle2, Zap, Workflow, Linkedin, Mail, CircuitBoard,
+  Layers, Truck, ShoppingCart,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -162,8 +163,8 @@ export default function Landing() {
               Put Hardware Development on Autopilot
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-balance text-base leading-relaxed text-slate-600 md:text-lg">
-              Spectir owns the full NPI workflow end-to-end — documentation, traceability, research synthesis,
-              and change propagation — freeing your engineers to build, not document.
+              Spectir owns the full hardware lifecycle — NPI documentation, bill of materials intelligence,
+              supply chain monitoring, and procurement automation — freeing your engineers to build, not administrate.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild variant="outline" size="lg" className="border-navy/20 text-navy hover:bg-navy/5">
@@ -348,6 +349,57 @@ export default function Landing() {
               </Button>
             </div>
           </Card>
+
+          <div className="mt-6 grid gap-5 md:grid-cols-3">
+            {[
+              {
+                icon: Layers, name: "BOM Intel",
+                desc: "AI-powered bill of materials intelligence and component risk monitoring",
+                bullets: [
+                  "Live BOM versioning with full change history",
+                  "EOL and single-source risk detection with AI-suggested alternates",
+                  "BOM-to-spec traceability: every component linked to its requirement",
+                ],
+              },
+              {
+                icon: Truck, name: "Supply Intel",
+                desc: "Supplier qualification automation and supply chain risk monitoring",
+                bullets: [
+                  "Auto-generates supplier qualification packages from datasheets",
+                  "Lead time tracking against NPI milestones",
+                  "Supplier health monitoring: financial, geopolitical, capacity risk signals",
+                ],
+              },
+              {
+                icon: ShoppingCart, name: "Procure Intel",
+                desc: "Procurement automation from purchase requisition to PO confirmation",
+                bullets: [
+                  "Auto-generates purchase requisitions from BOM and program timeline",
+                  "RFQ drafting and supplier communication in seconds",
+                  "PO tracking against gate milestones with real-time spend visibility",
+                ],
+              },
+            ].map(p => (
+              <Card key={p.name} className="flex flex-col border-slate-200 bg-white p-6 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-slate-500">
+                    <p.icon className="h-5 w-5" />
+                  </div>
+                  <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-700">Coming Soon</span>
+                </div>
+                <h3 className="mt-4 text-xl font-bold text-navy">{p.name}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{p.desc}</p>
+                <ul className="mt-4 space-y-2 text-sm text-slate-500">
+                  {p.bullets.map(b => (
+                    <li key={b} className="flex gap-2"><span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-400" /><span>{b}</span></li>
+                  ))}
+                </ul>
+                <Button asChild variant="outline" className="mt-6 border-navy/20 text-navy hover:bg-navy/5">
+                  <Link to="/auth">Join Waitlist <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
+                </Button>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
