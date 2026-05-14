@@ -57,8 +57,16 @@ export default function SupplyIntel() {
     { label: "At-risk lead times", value: stats.atRiskLT, icon: Clock },
   ];
 
+  if (!projectId) {
+    return (
+      <AppLayout title="Supply Intel" description="Supplier qualification & supply chain risk">
+        <NoProjectGuard hard message="Suppliers are organized by project. Open a project from the Projects page to manage suppliers." />
+      </AppLayout>
+    );
+  }
+
   return (
-    <AppLayout title="Supply Intel" description="Supplier qualification automation and supply chain risk monitoring"
+    <AppLayout title="Supply Intel" description={project ? `Project: ${project.name}` : "Supplier qualification automation"}
       actions={
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90"><Plus className="mr-1 h-3.5 w-3.5" /> Add Supplier</Button></DialogTrigger>
@@ -85,12 +93,7 @@ export default function SupplyIntel() {
         </Dialog>
       }>
       <div className="mx-auto max-w-7xl space-y-6">
-        {projectId && (
-          <div className="flex items-center gap-2 text-xs">
-            <Link to={`/projects/${projectId}`} className="text-primary hover:underline">← Back to project</Link>
-            <span className="text-muted-foreground">· Filtered to this project</span>
-          </div>
-        )}
+        <ProjectBreadcrumb project={project} currentPage="Suppliers" />
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {tiles.map(t => (
             <Card key={t.label} className="border-border/60 p-4">
