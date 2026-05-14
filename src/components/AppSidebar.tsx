@@ -67,6 +67,15 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
+      {activeProjectId && activeProjectName && !collapsed && (
+        <div className="border-b border-sidebar-border px-3 py-3">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Active project</p>
+          <Link to={`/projects/${activeProjectId}`} className="mt-1 line-clamp-2 block text-xs font-semibold text-primary hover:underline">
+            {activeProjectName}
+          </Link>
+        </div>
+      )}
+
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
