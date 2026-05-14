@@ -68,21 +68,27 @@ export default function ProcureIntel() {
     );
   };
 
+  if (!projectId) {
+    return (
+      <AppLayout title="Procure Intel" description="Procurement automation">
+        <NoProjectGuard hard message="Purchase requisitions, RFQs, and POs are organized by project. Open a project from the Projects page." />
+      </AppLayout>
+    );
+  }
+
+  const newPrHref = `/procurement/pr/new?project_id=${projectId}`;
+  const spendHref = `/procurement/spend?project_id=${projectId}`;
+
   return (
-    <AppLayout title="Procure Intel" description="Procurement automation from purchase requisition to purchase order"
+    <AppLayout title="Procure Intel" description={project ? `Project: ${project.name}` : "Procurement automation"}
       actions={
         <div className="flex gap-2">
-          <Link to="/procurement/spend"><Button size="sm" variant="outline"><BarChart3 className="mr-1 h-3.5 w-3.5" /> Spend</Button></Link>
-          <Link to="/procurement/pr/new"><Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90"><Plus className="mr-1 h-3.5 w-3.5" /> New PR</Button></Link>
+          <Link to={spendHref}><Button size="sm" variant="outline"><BarChart3 className="mr-1 h-3.5 w-3.5" /> Spend</Button></Link>
+          <Link to={newPrHref}><Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90"><Plus className="mr-1 h-3.5 w-3.5" /> New PR</Button></Link>
         </div>
       }>
       <div className="mx-auto max-w-7xl space-y-6">
-        {projectId && (
-          <div className="flex items-center gap-2 text-xs">
-            <Link to={`/projects/${projectId}`} className="text-primary hover:underline">← Back to project</Link>
-            <span className="text-muted-foreground">· Filtered to this project</span>
-          </div>
-        )}
+        <ProjectBreadcrumb project={project} currentPage="Procurement" />
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {tiles.map(t => (
             <Card key={t.label} className="border-border/60 p-4">

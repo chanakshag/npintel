@@ -6,17 +6,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
+import { useProject } from "@/hooks/useProject";
 
 const COLORS = ["#0D9488", "#0D1B3E", "#14B8A6", "#6366F1", "#F59E0B", "#EF4444", "#22C55E", "#A855F7"];
 
 export default function SpendAnalytics() {
+  const { projectId, project } = useProject();
   const [pos, setPos] = useState<any[]>([]);
   const [rfqs, setRfqs] = useState<any[]>([]);
 
   useEffect(() => {
-    supabase.from("purchase_orders").select("*, suppliers(name)").then(({ data }) => setPos(data ?? []));
-    supabase.from("rfqs").select("quoted_price, supplier_id, status").then(({ data }) => setRfqs(data ?? []));
-  }, []);
+    if (!projectId) return;
+    supabase.from("purchase_orders").select("*, suppliers(name)").eq("project_id", projectId)
+      .then(({ data }) => setPos(data ?? []));
+    supabase.from("rfqs").select("quoted_price, supplier_id, status").eq("project_id", projectId)
+      .then(({ data }) => setRfqs(data ?? []));
+  }, [projectId]);
 
   const monthly = useMemo(() => {
     const buckets: Record<string, number> = {};
