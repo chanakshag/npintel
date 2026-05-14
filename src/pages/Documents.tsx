@@ -182,8 +182,7 @@ const Documents = () => {
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </div>
-              </div>
-              <div className="mt-3 flex items-center gap-2">
+                <div className="mt-3 flex items-center gap-2">
                 <Badge variant={d.status === "ready" ? "default" : "secondary"} className="text-[10px]">
                   {d.status === "processing" && <Loader2 className="mr-1 h-2.5 w-2.5 animate-spin" />}
                   {d.status}
