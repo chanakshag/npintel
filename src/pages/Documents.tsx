@@ -175,15 +175,19 @@ const Documents = () => {
                       </p>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => remove(d)}>
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openDoc(d)} title="Open">
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => remove(d)} title="Delete">
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </div>
-                <div className="mt-3 flex items-center gap-2">
-                  <Badge variant={d.status === "ready" ? "default" : "secondary"} className="text-[10px]">
-                    {d.status === "processing" && <Loader2 className="mr-1 h-2.5 w-2.5 animate-spin" />}
-                    {d.status}
-                  </Badge>
+              </div>
+              <div className="mt-3 flex items-center gap-2">
+                <Badge variant={d.status === "ready" ? "default" : "secondary"} className="text-[10px]">
+                  {d.status === "processing" && <Loader2 className="mr-1 h-2.5 w-2.5 animate-spin" />}
+                  {d.status}
+                </Badge>
                   {d.category && <Badge variant="outline" className="text-[10px]">{d.category}</Badge>}
                 </div>
                 {d.summary && (
