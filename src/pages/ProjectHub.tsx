@@ -38,6 +38,7 @@ export default function ProjectHub() {
   const [generatingBom, setGeneratingBom] = useState(false);
   const [creatingPr, setCreatingPr] = useState(false);
   const [populatingSuppliers, setPopulatingSuppliers] = useState(false);
+  const [extractingReqs, setExtractingReqs] = useState(false);
   const [bomDialogOpen, setBomDialogOpen] = useState(false);
   const [bomName, setBomName] = useState("");
 
