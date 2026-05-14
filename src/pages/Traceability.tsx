@@ -27,8 +27,7 @@ const GATES = ["PDR", "EVT", "DVT", "PVT", "CDR"];
 
 const Traceability = () => {
   const { user } = useAuth();
-  const location = useLocation();
-  const projectId = useMemo(() => new URLSearchParams(location.search).get("project_id"), [location.search]);
+  const { projectId, project } = useProject();
   const [reqs, setReqs] = useState<Req[]>([]);
   const [links, setLinks] = useState<Link[]>([]);
   const [filterSub, setFilterSub] = useState<string>("all");
@@ -45,11 +44,10 @@ const Traceability = () => {
   const [linkType, setLinkType] = useState("derives");
 
   const load = async () => {
-    let rq = supabase.from("requirements").select("*").order("ref_id");
-    if (projectId) rq = rq.eq("project_id", projectId);
+    if (!projectId) { setReqs([]); setLinks([]); return; }
     const [r, l] = await Promise.all([
-      rq,
-      supabase.from("trace_links").select("*"),
+      supabase.from("requirements").select("*").eq("project_id", projectId).order("ref_id"),
+      supabase.from("trace_links").select("*").eq("project_id", projectId),
     ]);
     setReqs((r.data as any) ?? []);
     setLinks((l.data as any) ?? []);
