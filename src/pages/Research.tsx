@@ -143,6 +143,7 @@ const Research = () => {
       description={`Ask natural-language questions across your ${docCount} indexed document${docCount === 1 ? "" : "s"}.`}
     >
       <div className="mx-auto flex h-[calc(100vh-7rem)] max-w-4xl flex-col">
+        {project && <div className="pb-3"><ProjectBreadcrumb project={project} currentPage="Research" /></div>}
         <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto pb-4">
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
