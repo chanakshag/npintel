@@ -99,6 +99,49 @@ export default function ProjectHub() {
     finally { setGeneratingPrd(false); }
   };
 
+  const extractRequirements = async () => {
+    if (!project || !user) return;
+    setExtractingReqs(true);
+    try {
+      const { data: projDocs } = await supabase
+        .from("documents")
+        .select("name, category, summary, key_points")
+        .eq("project_id", project.id)
+        .eq("status", "ready")
+        .neq("category", "PRD");
+      const raw = await callIntelAi("requirements_extract", {
+        product_description: project.product_description,
+        industry: project.industry,
+        gate_standard: project.gate_standard,
+        documents: projDocs ?? [],
+      });
+      const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      const items: any[] = parsed.requirements ?? [];
+      if (!items.length) { toast.info("No requirements extracted"); return; }
+      const existing = new Set(reqs.map(r => r.ref_id));
+      const rows = items
+        .filter(i => i.ref_id && !existing.has(i.ref_id))
+        .map(i => ({
+          user_id: user.id,
+          project_id: project.id,
+          ref_id: i.ref_id,
+          title: (i.title ?? "").slice(0, 200),
+          description: i.description ?? null,
+          subsystem: i.subsystem ?? null,
+          owner: i.owner ?? null,
+          gate_stage: i.gate_stage ?? null,
+          status: i.status ?? "draft",
+        }));
+      if (!rows.length) { toast.info("All requirements already exist"); return; }
+      const { error } = await supabase.from("requirements").insert(rows);
+      if (error) throw error;
+      toast.success(`${rows.length} requirements extracted`);
+      load();
+    } catch (e: any) { toast.error(e.message ?? "Extraction failed"); }
+    finally { setExtractingReqs(false); }
+  };
+
   const createBomManual = async () => {
     if (!project || !user || !bomName.trim()) return;
     const { data, error } = await supabase.from("boms")
