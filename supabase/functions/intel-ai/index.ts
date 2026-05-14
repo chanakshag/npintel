@@ -147,6 +147,31 @@ Suggest an initial Bill of Materials. Return STRICT JSON only (no markdown, no c
 
 Return 8-20 realistic components.`,
 
+  requirements_extract: (p) => `You are a senior systems engineer extracting a complete, traceable requirements set for a **${p.product_description}** in the **${p.industry}** industry, governed by **${p.gate_standard}**.
+
+PROJECT DOCUMENTS (ground every requirement in these where possible — cite the document name in "source"):
+${(p.documents ?? []).map((d: any, i: number) => `[Doc ${i + 1}] ${d.name} (${d.category ?? "?"})\nSummary: ${d.summary ?? "n/a"}\nKey points: ${(d.key_points ?? []).join("; ") || "n/a"}`).join("\n\n") || "(no supporting documents — infer industry-defensible defaults and mark source as 'inferred')"}
+
+Produce a DETAILED, engineering-grade requirements set. Cover BOTH functional and non-functional concerns. Be SPECIFIC: real numbers (units, tolerances, ranges), real standards (IPC, ISO, IEC, MIL-STD, FCC, FDA, AEC-Q, IEC 62368-1, IEC 61000, MIL-STD-810, IATF 16949, RTCA DO-178C/254, etc.), real interfaces. Avoid vague language like "fast" or "robust".
+
+Return STRICT JSON only (no markdown, no code fences). Schema:
+{
+  "requirements": [
+    {
+      "ref_id": "REQ-FUN-001 | REQ-PERF-001 | REQ-PWR-001 | REQ-MECH-001 | REQ-EMC-001 | REQ-ENV-001 | REQ-REL-001 | REQ-SEC-001 | REQ-MFG-001 | REQ-REG-001 | REQ-USR-001 (use category prefix and zero-padded index)",
+      "title": "Short imperative sentence (<=90 chars)",
+      "description": "1–3 sentences with concrete numbers, units, standards, and verification criteria.",
+      "subsystem": "e.g. Power, RF, Mechanical, Firmware, Compliance, UX, Manufacturing, Safety",
+      "owner": "Role (e.g. EE Lead, ME Lead, FW Lead, Compliance, PM)",
+      "gate_stage": "Concept | Plan | Design | Verify | Validate | Launch",
+      "status": "draft",
+      "source": "Document name OR 'inferred from ${p.industry} best practice'"
+    }
+  ]
+}
+
+Generate **30–60 requirements** spread across categories: at least 10 functional, plus performance, power/thermal, mechanical/environmental, EMC/safety, reliability, security, manufacturability, regulatory, and usability. ref_id values must be unique.`,
+
   qual_package: (p) => `Generate a formal Supplier Qualification Package in markdown.
 
 Supplier: ${p.supplier.name} (${p.supplier.category ?? ""}, ${p.supplier.country ?? ""})
@@ -179,12 +204,12 @@ serve(async (req) => {
       method: "POST",
       headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: task === "prd_generate" ? "google/gemini-2.5-pro" : "google/gemini-3-flash-preview",
+        model: (task === "prd_generate" || task === "requirements_extract") ? "google/gemini-2.5-pro" : "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: "You are an expert supply chain & procurement assistant for hardware NPI teams. Be precise, terse, and engineering-focused." },
           { role: "user", content: prompt },
         ],
-        max_tokens: task === "prd_generate" ? 8000 : 4000,
+        max_tokens: task === "prd_generate" ? 8000 : task === "requirements_extract" ? 8000 : 4000,
       }),
     });
 
