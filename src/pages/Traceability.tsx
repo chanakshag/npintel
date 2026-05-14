@@ -189,12 +189,12 @@ const Traceability = () => {
       }
     >
       <div className="mx-auto max-w-7xl space-y-4">
-        {projectId && (
-          <div className="flex items-center gap-2 text-xs">
-            <Link to={`/projects/${projectId}`} className="text-primary hover:underline">← Back to project</Link>
-            <span className="text-muted-foreground">· Filtered to this project</span>
-          </div>
-        )}
+        <ProjectBreadcrumb project={project} currentPage="Traceability" />
+        {!projectId ? (
+          <NoProjectGuard message="Requirements and trace links are scoped per project. Pick a project to view or build the traceability matrix." hard />
+        ) : (
+        <>
+
         {/* Filters + alert */}
         <div className="flex flex-wrap items-center gap-3">
           <Select value={filterSub} onValueChange={setFilterSub}>
