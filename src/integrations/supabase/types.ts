@@ -25,6 +25,7 @@ export type Database = {
           impact_summary: string | null
           new_value: string | null
           old_value: string | null
+          project_id: string
           user_id: string
         }
         Insert: {
@@ -37,6 +38,7 @@ export type Database = {
           impact_summary?: string | null
           new_value?: string | null
           old_value?: string | null
+          project_id: string
           user_id: string
         }
         Update: {
@@ -49,6 +51,7 @@ export type Database = {
           impact_summary?: string | null
           new_value?: string | null
           old_value?: string | null
+          project_id?: string
           user_id?: string
         }
         Relationships: [
@@ -64,6 +67,13 @@ export type Database = {
             columns: ["bom_item_id"]
             isOneToOne: false
             referencedRelation: "bom_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bom_changes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -235,7 +245,7 @@ export type Database = {
           key_points: Json | null
           mime_type: string | null
           name: string
-          project_id: string | null
+          project_id: string
           size_bytes: number | null
           status: string
           summary: string | null
@@ -249,7 +259,7 @@ export type Database = {
           key_points?: Json | null
           mime_type?: string | null
           name: string
-          project_id?: string | null
+          project_id: string
           size_bytes?: number | null
           status?: string
           summary?: string | null
@@ -263,7 +273,7 @@ export type Database = {
           key_points?: Json | null
           mime_type?: string | null
           name?: string
-          project_id?: string | null
+          project_id?: string
           size_bytes?: number | null
           status?: string
           summary?: string | null
@@ -286,6 +296,7 @@ export type Database = {
           gate_type: string
           id: string
           name: string
+          project_id: string
           status: string
           user_id: string
         }
@@ -295,6 +306,7 @@ export type Database = {
           gate_type: string
           id?: string
           name: string
+          project_id: string
           status?: string
           user_id: string
         }
@@ -304,10 +316,19 @@ export type Database = {
           gate_type?: string
           id?: string
           name?: string
+          project_id?: string
           status?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "gate_reviews_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       knowledge_artifacts: {
         Row: {
@@ -420,7 +441,7 @@ export type Database = {
           needed_by: string | null
           npi_gate: string | null
           part_number: string | null
-          project_id: string | null
+          project_id: string
           quoted_lead_days: number | null
           status: string
           supplier_id: string
@@ -434,7 +455,7 @@ export type Database = {
           needed_by?: string | null
           npi_gate?: string | null
           part_number?: string | null
-          project_id?: string | null
+          project_id: string
           quoted_lead_days?: number | null
           status?: string
           supplier_id: string
@@ -448,7 +469,7 @@ export type Database = {
           needed_by?: string | null
           npi_gate?: string | null
           part_number?: string | null
-          project_id?: string | null
+          project_id?: string
           quoted_lead_days?: number | null
           status?: string
           supplier_id?: string
@@ -724,6 +745,7 @@ export type Database = {
           npi_gate: string | null
           po_number: string | null
           pr_id: string | null
+          project_id: string
           rfq_id: string | null
           status: string
           supplier_id: string
@@ -739,6 +761,7 @@ export type Database = {
           npi_gate?: string | null
           po_number?: string | null
           pr_id?: string | null
+          project_id: string
           rfq_id?: string | null
           status?: string
           supplier_id: string
@@ -754,6 +777,7 @@ export type Database = {
           npi_gate?: string | null
           po_number?: string | null
           pr_id?: string | null
+          project_id?: string
           rfq_id?: string | null
           status?: string
           supplier_id?: string
@@ -766,6 +790,13 @@ export type Database = {
             columns: ["pr_id"]
             isOneToOne: false
             referencedRelation: "purchase_requisitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
           {
@@ -844,7 +875,7 @@ export type Database = {
           gate_stage: string | null
           id: string
           owner: string | null
-          project_id: string | null
+          project_id: string
           ref_id: string
           status: string
           subsystem: string | null
@@ -857,7 +888,7 @@ export type Database = {
           gate_stage?: string | null
           id?: string
           owner?: string | null
-          project_id?: string | null
+          project_id: string
           ref_id: string
           status?: string
           subsystem?: string | null
@@ -870,7 +901,7 @@ export type Database = {
           gate_stage?: string | null
           id?: string
           owner?: string | null
-          project_id?: string | null
+          project_id?: string
           ref_id?: string
           status?: string
           subsystem?: string | null
@@ -893,6 +924,7 @@ export type Database = {
           created_at: string
           id: string
           pr_id: string | null
+          project_id: string
           quoted_lead_days: number | null
           quoted_price: number | null
           response_received_at: string | null
@@ -908,6 +940,7 @@ export type Database = {
           created_at?: string
           id?: string
           pr_id?: string | null
+          project_id: string
           quoted_lead_days?: number | null
           quoted_price?: number | null
           response_received_at?: string | null
@@ -923,6 +956,7 @@ export type Database = {
           created_at?: string
           id?: string
           pr_id?: string | null
+          project_id?: string
           quoted_lead_days?: number | null
           quoted_price?: number | null
           response_received_at?: string | null
@@ -939,6 +973,13 @@ export type Database = {
             columns: ["pr_id"]
             isOneToOne: false
             referencedRelation: "purchase_requisitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfqs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
           {
@@ -959,6 +1000,7 @@ export type Database = {
           file_url: string | null
           id: string
           notes: string | null
+          project_id: string
           qualification_status: string
           supplier_id: string
           user_id: string
@@ -972,6 +1014,7 @@ export type Database = {
           file_url?: string | null
           id?: string
           notes?: string | null
+          project_id: string
           qualification_status?: string
           supplier_id: string
           user_id: string
@@ -985,12 +1028,20 @@ export type Database = {
           file_url?: string | null
           id?: string
           notes?: string | null
+          project_id?: string
           qualification_status?: string
           supplier_id?: string
           user_id?: string
           valid_until?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "supplier_qualifications_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "supplier_qualifications_supplier_id_fkey"
             columns: ["supplier_id"]
@@ -1009,7 +1060,7 @@ export type Database = {
           id: string
           name: string
           primary_contact: string | null
-          project_id: string | null
+          project_id: string
           risk_score: number
           status: string
           updated_at: string
@@ -1024,7 +1075,7 @@ export type Database = {
           id?: string
           name: string
           primary_contact?: string | null
-          project_id?: string | null
+          project_id: string
           risk_score?: number
           status?: string
           updated_at?: string
@@ -1039,7 +1090,7 @@ export type Database = {
           id?: string
           name?: string
           primary_contact?: string | null
-          project_id?: string | null
+          project_id?: string
           risk_score?: number
           status?: string
           updated_at?: string
@@ -1061,6 +1112,7 @@ export type Database = {
           description: string | null
           flagged_at: string
           id: string
+          project_id: string
           resolved_at: string | null
           risk_type: string
           severity: string
@@ -1073,6 +1125,7 @@ export type Database = {
           description?: string | null
           flagged_at?: string
           id?: string
+          project_id: string
           resolved_at?: string | null
           risk_type: string
           severity?: string
@@ -1085,6 +1138,7 @@ export type Database = {
           description?: string | null
           flagged_at?: string
           id?: string
+          project_id?: string
           resolved_at?: string | null
           risk_type?: string
           severity?: string
@@ -1094,6 +1148,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "supply_risks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "supply_risks_supplier_id_fkey"
             columns: ["supplier_id"]
@@ -1109,6 +1170,7 @@ export type Database = {
           from_req: string
           id: string
           link_type: string
+          project_id: string
           to_req: string
           user_id: string
         }
@@ -1117,6 +1179,7 @@ export type Database = {
           from_req: string
           id?: string
           link_type?: string
+          project_id: string
           to_req: string
           user_id: string
         }
@@ -1125,6 +1188,7 @@ export type Database = {
           from_req?: string
           id?: string
           link_type?: string
+          project_id?: string
           to_req?: string
           user_id?: string
         }
@@ -1134,6 +1198,13 @@ export type Database = {
             columns: ["from_req"]
             isOneToOne: false
             referencedRelation: "requirements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trace_links_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
           {
