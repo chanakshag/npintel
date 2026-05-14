@@ -21,10 +21,13 @@ const items = [
   { title: "Gate Reviews", url: "/gates", icon: ClipboardCheck },
 ];
 
-const comingSoon = [
-  { title: "BOM Intel", url: "/bom", icon: Layers },
-  { title: "Supply Intel", url: "/supply", icon: Truck },
-  { title: "Procure Intel", url: "/procurement", icon: ShoppingCart },
+const platformGroups = [
+  { label: "BOM Intel", items: [{ title: "BOMs", url: "/bom", icon: Layers }] },
+  { label: "Supply Intel", items: [{ title: "Suppliers", url: "/supply", icon: Truck }] },
+  { label: "Procure Intel", items: [
+    { title: "Procurement", url: "/procurement", icon: ShoppingCart },
+    { title: "Spend", url: "/procurement/spend", icon: BarChart3 },
+  ]},
 ];
 
 export function AppSidebar() {
