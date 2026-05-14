@@ -96,7 +96,7 @@ const Research = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: next.map(m => ({ role: m.role, content: m.content })) }),
+        body: JSON.stringify({ messages: next.map(m => ({ role: m.role, content: m.content })), project_id: projectId }),
       });
 
       if (resp.status === 429) { toast.error("Rate limited. Try again in a moment."); setStreaming(false); return; }
