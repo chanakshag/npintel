@@ -10,6 +10,8 @@ import { Send, Sparkles, User, Bot, Loader2, FileText } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useProject } from "@/hooks/useProject";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
 
 type Msg = { id?: string; role: "user" | "assistant"; content: string };
 
