@@ -11,10 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { statusBadge, severityBadge, riskColor } from "@/lib/intel";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
+import { useProject } from "@/hooks/useProject";
 
 export default function SupplyIntel() {
-  const location = useLocation();
-  const projectId = new URLSearchParams(location.search).get("project_id");
+  const { projectId, project } = useProject();
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [risks, setRisks] = useState<any[]>([]);
   const [stats, setStats] = useState({ total: 0, qualified: 0, openRisks: 0, atRiskLT: 0 });
@@ -22,12 +23,11 @@ export default function SupplyIntel() {
   const [draft, setDraft] = useState<any>({ name: "", category: "component", country: "", contact_email: "" });
 
   const load = async () => {
-    let sq = supabase.from("suppliers").select("*").order("created_at", { ascending: false });
-    if (projectId) sq = sq.eq("project_id", projectId);
+    if (!projectId) return;
     const [{ data: s }, { data: r }, { data: lt }] = await Promise.all([
-      sq,
-      supabase.from("supply_risks").select("*, suppliers(name)").eq("status", "open").order("flagged_at", { ascending: false }).limit(15),
-      supabase.from("lead_time_entries").select("status").neq("status", "on_track"),
+      supabase.from("suppliers").select("*").eq("project_id", projectId).order("created_at", { ascending: false }),
+      supabase.from("supply_risks").select("*, suppliers(name)").eq("project_id", projectId).eq("status", "open").order("flagged_at", { ascending: false }).limit(15),
+      supabase.from("lead_time_entries").select("status").eq("project_id", projectId).neq("status", "on_track"),
     ]);
     setSuppliers(s ?? []); setRisks(r ?? []);
     setStats({
@@ -41,9 +41,10 @@ export default function SupplyIntel() {
 
   const create = async () => {
     if (!draft.name?.trim()) return;
+    if (!projectId) return toast.error("Open a project first");
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return;
-    const { error } = await supabase.from("suppliers").insert({ ...draft, user_id: u.user.id, project_id: projectId ?? null });
+    const { error } = await supabase.from("suppliers").insert({ ...draft, user_id: u.user.id, project_id: projectId });
     if (error) return toast.error(error.message);
     toast.success("Supplier added"); setOpen(false); setDraft({ name: "", category: "component", country: "", contact_email: "" });
     load();
