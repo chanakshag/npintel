@@ -10,14 +10,15 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages } = await req.json();
+    const { messages, project_id } = await req.json();
     if (!Array.isArray(messages)) throw new Error("messages required");
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    // Build context from user's documents
+    // Build context from user's documents (scoped to project when provided)
     let context = "";
+    let projectHeader = "";
     const auth = req.headers.get("Authorization");
     if (auth) {
       const supabase = createClient(
@@ -25,11 +26,25 @@ serve(async (req) => {
         Deno.env.get("SUPABASE_ANON_KEY")!,
         { global: { headers: { Authorization: auth } } }
       );
-      const { data: docs } = await supabase
+
+      if (project_id) {
+        const { data: proj } = await supabase
+          .from("projects")
+          .select("name, industry, product_description, gate_standard")
+          .eq("id", project_id)
+          .maybeSingle();
+        if (proj) {
+          projectHeader = `Active project: ${proj.name} (${proj.industry}, ${proj.gate_standard}).\nProduct: ${proj.product_description}\n\n`;
+        }
+      }
+
+      let q = supabase
         .from("documents")
         .select("name, category, summary, key_points")
         .eq("status", "ready")
         .limit(40);
+      if (project_id) q = q.eq("project_id", project_id);
+      const { data: docs } = await q;
       if (docs && docs.length) {
         context = "Indexed engineering documents (use as grounding):\n\n" +
           docs.map((d: any, i: number) =>
