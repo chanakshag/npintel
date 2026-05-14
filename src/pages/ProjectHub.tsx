@@ -312,22 +312,34 @@ export default function ProjectHub() {
               <h3 className="text-sm font-semibold text-navy">Requirements</h3>
               <Badge variant="secondary" className="text-[10px]">{reqs.length} requirement{reqs.length === 1 ? "" : "s"}</Badge>
             </div>
-            <Link to={`/traceability${q}`}><Button size="sm" variant="outline">View All <ArrowUpRight className="ml-1 h-3 w-3" /></Button></Link>
+            <div className="flex gap-2">
+              {reqs.length > 0 && (
+                <Button size="sm" variant="outline" onClick={extractRequirements} disabled={extractingReqs}>
+                  {extractingReqs ? <><Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> Extracting…</> : <><Sparkles className="mr-1 h-3.5 w-3.5" /> Extract More</>}
+                </Button>
+              )}
+              <Link to={`/traceability${q}`}><Button size="sm" variant="outline">View All <ArrowUpRight className="ml-1 h-3 w-3" /></Button></Link>
+            </div>
           </div>
           {reqs.length === 0 ? (
             <div className="p-8 text-center">
-              <p className="text-sm text-muted-foreground">No requirements extracted yet. Upload documents first, then use the AI agent to extract requirements automatically.</p>
-              <Link to={`/research${q}`}><Button size="sm" className="mt-3 bg-primary text-primary-foreground hover:bg-primary/90"><Sparkles className="mr-1 h-3.5 w-3.5" /> Extract Requirements with AI</Button></Link>
+              <p className="text-sm text-muted-foreground">No requirements extracted yet. {docs.length === 0 ? "Upload documents first, then" : "Click below to"} extract a detailed requirements set with AI.</p>
+              <Button size="sm" onClick={extractRequirements} disabled={extractingReqs} className="mt-3 bg-primary text-primary-foreground hover:bg-primary/90">
+                {extractingReqs ? <><Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Extracting requirements…</> : <><Sparkles className="mr-1.5 h-3.5 w-3.5" /> Extract Requirements with AI</>}
+              </Button>
             </div>
           ) : (
             <ul className="divide-y divide-border">
               {reqs.slice(0, 5).map(r => (
-                <li key={r.id} className="flex items-center justify-between gap-3 px-4 py-2.5">
-                  <div className="flex min-w-0 items-center gap-2">
-                    <span className="font-mono text-[11px] text-muted-foreground">{r.ref_id}</span>
-                    <span className="truncate text-sm">{r.title}</span>
+                <li key={r.id} className="flex items-start justify-between gap-3 px-4 py-2.5">
+                  <div className="flex min-w-0 items-start gap-2">
+                    <span className="mt-0.5 font-mono text-[11px] text-muted-foreground">{r.ref_id}</span>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm">{r.title}</p>
+                      {r.description && <p className="line-clamp-2 text-[11px] text-muted-foreground">{r.description}</p>}
+                    </div>
                   </div>
-                  <Badge variant={r.status === "verified" ? "default" : r.status === "blocked" ? "destructive" : "secondary"} className="text-[10px]">{r.status}</Badge>
+                  <Badge variant={r.status === "verified" ? "default" : r.status === "blocked" ? "destructive" : "secondary"} className="shrink-0 text-[10px]">{r.status}</Badge>
                 </li>
               ))}
             </ul>
