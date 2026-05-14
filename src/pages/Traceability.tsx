@@ -56,8 +56,9 @@ const Traceability = () => {
 
   const addReq = async () => {
     if (!user) return;
+    if (!projectId) return toast.error("Open a project first");
     if (!form.ref_id || !form.title) return toast.error("Ref ID and title required");
-    const { error } = await supabase.from("requirements").insert({ ...form, user_id: user.id, project_id: projectId ?? null });
+    const { error } = await supabase.from("requirements").insert({ ...form, user_id: user.id, project_id: projectId });
     if (error) return toast.error(error.message);
     toast.success("Requirement added");
     setOpen(false);
