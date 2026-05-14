@@ -353,7 +353,7 @@ export default function Landing() {
           <div className="mt-6 grid gap-5 md:grid-cols-3">
             {[
               {
-                icon: Layers, name: "BOM Intel",
+                icon: Layers, name: "BOM Intel", route: "/bom",
                 desc: "AI-powered bill of materials intelligence and component risk monitoring",
                 bullets: [
                   "Live BOM versioning with full change history",
@@ -362,7 +362,7 @@ export default function Landing() {
                 ],
               },
               {
-                icon: Truck, name: "Supply Intel",
+                icon: Truck, name: "Supply Intel", route: "/supply",
                 desc: "Supplier qualification automation and supply chain risk monitoring",
                 bullets: [
                   "Auto-generates supplier qualification packages from datasheets",
@@ -371,7 +371,7 @@ export default function Landing() {
                 ],
               },
               {
-                icon: ShoppingCart, name: "Procure Intel",
+                icon: ShoppingCart, name: "Procure Intel", route: "/procurement",
                 desc: "Procurement automation from purchase requisition to PO confirmation",
                 bullets: [
                   "Auto-generates purchase requisitions from BOM and program timeline",
@@ -382,10 +382,9 @@ export default function Landing() {
             ].map(p => (
               <Card key={p.name} className="flex flex-col border-slate-200 bg-white p-6 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-slate-500">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-navy text-primary-glow">
                     <p.icon className="h-5 w-5" />
                   </div>
-                  <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-700">Coming Soon</span>
                 </div>
                 <h3 className="mt-4 text-xl font-bold text-navy">{p.name}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-slate-600">{p.desc}</p>
@@ -394,8 +393,8 @@ export default function Landing() {
                     <li key={b} className="flex gap-2"><span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-400" /><span>{b}</span></li>
                   ))}
                 </ul>
-                <Button asChild variant="outline" className="mt-6 border-navy/20 text-navy hover:bg-navy/5">
-                  <Link to="/auth">Join Waitlist <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
+                <Button asChild className="mt-6 bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Link to={p.route}>Open <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
                 </Button>
               </Card>
             ))}
