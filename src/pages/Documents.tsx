@@ -92,14 +92,26 @@ const Documents = () => {
   };
 
   const openDoc = async (d: Doc) => {
+    // Try real file in storage first
     const { data, error } = await supabase.storage
       .from("documents")
       .createSignedUrl(d.file_path, 3600);
-    if (error || !data?.signedUrl) {
-      toast.error(error?.message ?? "Could not open document");
+    if (data?.signedUrl) {
+      window.open(data.signedUrl, "_blank", "noopener,noreferrer");
       return;
     }
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+    // Fallback: render inline content (e.g. AI-generated PRDs stored only in summary)
+    const inline = (d as any).summary as string | null;
+    if (inline && inline.trim().length > 0) {
+      const isMd = (d.file_path ?? "").toLowerCase().endsWith(".md") || d.category === "PRD";
+      const html = `<!doctype html><html><head><meta charset="utf-8"><title>${d.name}</title>
+<style>body{font-family:ui-sans-serif,system-ui,sans-serif;max-width:820px;margin:40px auto;padding:0 24px;line-height:1.6;color:#0f172a}pre,code{background:#f1f5f9;padding:2px 6px;border-radius:4px}h1,h2,h3{line-height:1.25}hr{border:none;border-top:1px solid #e2e8f0;margin:24px 0}</style>
+</head><body><h1>${d.name}</h1><hr/><pre style="white-space:pre-wrap;background:transparent;padding:0;font-family:inherit;font-size:14px">${inline.replace(/[<>&]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c] as string))}</pre></body></html>`;
+      const blob = new Blob([html], { type: "text/html" });
+      window.open(URL.createObjectURL(blob), "_blank", "noopener,noreferrer");
+      return;
+    }
+    toast.error(error?.message ?? "Could not open document");
   };
 
   const filtered = docs.filter((d) =>
