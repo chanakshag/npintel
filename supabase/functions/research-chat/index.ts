@@ -67,7 +67,7 @@ FORMATTING RULES (strict):
 - Bold key terms with **text** instead of turning them into headings.
 - Use tables only when comparing 3+ items across attributes.
 
-${context || "No documents indexed yet. Answer from general engineering knowledge and tell the user to upload documents for grounded answers."}`;
+${projectHeader}${context || "No documents indexed yet. Answer from general engineering knowledge and tell the user to upload documents for grounded answers."}`;
 
     const upstream = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
