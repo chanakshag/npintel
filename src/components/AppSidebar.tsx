@@ -21,6 +21,12 @@ const items = [
   { title: "Gate Reviews", url: "/gates", icon: ClipboardCheck },
 ];
 
+const comingSoon = [
+  { title: "BOM Intel", url: "/bom", icon: Layers },
+  { title: "Supply Intel", url: "/supply", icon: Truck },
+  { title: "Procure Intel", url: "/procurement", icon: ShoppingCart },
+];
+
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
