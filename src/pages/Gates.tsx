@@ -29,8 +29,7 @@ const GATE_DESC: Record<string, string> = {
 
 const Gates = () => {
   const { user } = useAuth();
-  const location = useLocation();
-  const projectId = useMemo(() => new URLSearchParams(location.search).get("project_id"), [location.search]);
+  const { projectId, project } = useProject();
   const [gates, setGates] = useState<Gate[]>([]);
   const [open, setOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
