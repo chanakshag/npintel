@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, FileText, GitBranch, MessagesSquare, GitCompare, ClipboardCheck, LogOut, Cpu, BookOpen, Workflow,
-  Layers, Truck, ShoppingCart,
+  Layers, Truck, ShoppingCart, BarChart3,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader,
@@ -73,35 +73,32 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          {!collapsed && (
-            <div className="mb-1 px-3 pt-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-              Coming Soon
-            </div>
-          )}
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {comingSoon.map((item) => {
-                const active = pathname === item.url;
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={active} className="opacity-60">
-                      <NavLink to={item.url} className="flex items-center gap-2.5">
-                        <item.icon className="h-4 w-4 shrink-0" />
-                        {!collapsed && (
-                          <>
-                            <span className="text-sm">{item.title}</span>
-                            <span className="ml-auto h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden />
-                          </>
-                        )}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {platformGroups.map((group) => (
+          <SidebarGroup key={group.label}>
+            {!collapsed && (
+              <div className="mb-1 px-3 pt-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+                {group.label}
+              </div>
+            )}
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((item) => {
+                  const active = pathname === item.url;
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild isActive={active}>
+                        <NavLink to={item.url} className="flex items-center gap-2.5">
+                          <item.icon className="h-4 w-4 shrink-0" />
+                          {!collapsed && <span className="text-sm">{item.title}</span>}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border p-3">
