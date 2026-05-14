@@ -111,6 +111,7 @@ export default function Workflow() {
       // Create a placeholder document tied to this phase output
       const { data: doc, error } = await supabase.from("documents").insert({
         user_id: user.id,
+        project_id: project.id,
         name: `${outputName} — ${project.name}`,
         file_path: `workflow/${project.id}/${active.id}/${outputName}`,
         category: active.title,

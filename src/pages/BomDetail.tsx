@@ -50,7 +50,9 @@ export default function BomDetail() {
   const logChange = async (payload: Partial<Change> & { change_type: string }) => {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user || !bomId) return;
-    await supabase.from("bom_changes").insert({ ...payload, bom_id: bomId, user_id: u.user.id });
+    const projectId = (bom as any)?.project_id;
+    if (!projectId) return;
+    await supabase.from("bom_changes").insert({ ...payload, bom_id: bomId, user_id: u.user.id, project_id: projectId });
   };
 
   const addItem = async () => {
