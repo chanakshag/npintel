@@ -14,6 +14,155 @@ export type Database = {
   }
   public: {
     Tables: {
+      bom_changes: {
+        Row: {
+          bom_id: string
+          bom_item_id: string | null
+          change_type: string
+          created_at: string
+          field_changed: string | null
+          id: string
+          impact_summary: string | null
+          new_value: string | null
+          old_value: string | null
+          user_id: string
+        }
+        Insert: {
+          bom_id: string
+          bom_item_id?: string | null
+          change_type: string
+          created_at?: string
+          field_changed?: string | null
+          id?: string
+          impact_summary?: string | null
+          new_value?: string | null
+          old_value?: string | null
+          user_id: string
+        }
+        Update: {
+          bom_id?: string
+          bom_item_id?: string | null
+          change_type?: string
+          created_at?: string
+          field_changed?: string | null
+          id?: string
+          impact_summary?: string | null
+          new_value?: string | null
+          old_value?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bom_changes_bom_id_fkey"
+            columns: ["bom_id"]
+            isOneToOne: false
+            referencedRelation: "boms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bom_changes_bom_item_id_fkey"
+            columns: ["bom_item_id"]
+            isOneToOne: false
+            referencedRelation: "bom_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bom_items: {
+        Row: {
+          bom_id: string
+          created_at: string
+          description: string | null
+          id: string
+          lead_time_days: number | null
+          manufacturer: string | null
+          notes: string | null
+          part_number: string
+          quantity: number
+          spec_requirement: string | null
+          status: string
+          supplier: string | null
+          unit: string
+          unit_cost: number | null
+          user_id: string
+        }
+        Insert: {
+          bom_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lead_time_days?: number | null
+          manufacturer?: string | null
+          notes?: string | null
+          part_number: string
+          quantity?: number
+          spec_requirement?: string | null
+          status?: string
+          supplier?: string | null
+          unit?: string
+          unit_cost?: number | null
+          user_id: string
+        }
+        Update: {
+          bom_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lead_time_days?: number | null
+          manufacturer?: string | null
+          notes?: string | null
+          part_number?: string
+          quantity?: number
+          spec_requirement?: string | null
+          status?: string
+          supplier?: string | null
+          unit?: string
+          unit_cost?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bom_items_bom_id_fkey"
+            columns: ["bom_id"]
+            isOneToOne: false
+            referencedRelation: "boms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      boms: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          project_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          version: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          project_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          version?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          project_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          version?: string
+        }
+        Relationships: []
+      }
       changes: {
         Row: {
           change_type: string
@@ -251,6 +400,133 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_time_entries: {
+        Row: {
+          actual_lead_days: number | null
+          bom_item_id: string | null
+          created_at: string
+          id: string
+          needed_by: string | null
+          npi_gate: string | null
+          part_number: string | null
+          quoted_lead_days: number | null
+          status: string
+          supplier_id: string
+          user_id: string
+        }
+        Insert: {
+          actual_lead_days?: number | null
+          bom_item_id?: string | null
+          created_at?: string
+          id?: string
+          needed_by?: string | null
+          npi_gate?: string | null
+          part_number?: string | null
+          quoted_lead_days?: number | null
+          status?: string
+          supplier_id: string
+          user_id: string
+        }
+        Update: {
+          actual_lead_days?: number | null
+          bom_item_id?: string | null
+          created_at?: string
+          id?: string
+          needed_by?: string | null
+          npi_gate?: string | null
+          part_number?: string | null
+          quoted_lead_days?: number | null
+          status?: string
+          supplier_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_time_entries_bom_item_id_fkey"
+            columns: ["bom_item_id"]
+            isOneToOne: false
+            referencedRelation: "bom_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_time_entries_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pr_items: {
+        Row: {
+          bom_item_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          needed_by: string | null
+          part_number: string
+          pr_id: string
+          quantity: number
+          status: string
+          supplier_id: string | null
+          total_cost: number | null
+          unit_cost: number | null
+          user_id: string
+        }
+        Insert: {
+          bom_item_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          needed_by?: string | null
+          part_number: string
+          pr_id: string
+          quantity: number
+          status?: string
+          supplier_id?: string | null
+          total_cost?: number | null
+          unit_cost?: number | null
+          user_id: string
+        }
+        Update: {
+          bom_item_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          needed_by?: string | null
+          part_number?: string
+          pr_id?: string
+          quantity?: number
+          status?: string
+          supplier_id?: string | null
+          total_cost?: number | null
+          unit_cost?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pr_items_bom_item_id_fkey"
+            columns: ["bom_item_id"]
+            isOneToOne: false
+            referencedRelation: "bom_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pr_items_pr_id_fkey"
+            columns: ["pr_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_requisitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pr_items_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           company: string | null
@@ -417,6 +693,129 @@ export type Database = {
         }
         Relationships: []
       }
+      purchase_orders: {
+        Row: {
+          confirmation_received_at: string | null
+          created_at: string
+          delivery_date: string | null
+          id: string
+          notes: string | null
+          npi_gate: string | null
+          po_number: string | null
+          pr_id: string | null
+          rfq_id: string | null
+          status: string
+          supplier_id: string
+          total_amount: number | null
+          user_id: string
+        }
+        Insert: {
+          confirmation_received_at?: string | null
+          created_at?: string
+          delivery_date?: string | null
+          id?: string
+          notes?: string | null
+          npi_gate?: string | null
+          po_number?: string | null
+          pr_id?: string | null
+          rfq_id?: string | null
+          status?: string
+          supplier_id: string
+          total_amount?: number | null
+          user_id: string
+        }
+        Update: {
+          confirmation_received_at?: string | null
+          created_at?: string
+          delivery_date?: string | null
+          id?: string
+          notes?: string | null
+          npi_gate?: string | null
+          po_number?: string | null
+          pr_id?: string | null
+          rfq_id?: string | null
+          status?: string
+          supplier_id?: string
+          total_amount?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_pr_id_fkey"
+            columns: ["pr_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_requisitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_requisitions: {
+        Row: {
+          bom_id: string | null
+          created_at: string
+          id: string
+          needed_by: string | null
+          npi_gate: string | null
+          pr_number: string | null
+          project_id: string | null
+          status: string
+          title: string
+          total_estimated_cost: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bom_id?: string | null
+          created_at?: string
+          id?: string
+          needed_by?: string | null
+          npi_gate?: string | null
+          pr_number?: string | null
+          project_id?: string | null
+          status?: string
+          title: string
+          total_estimated_cost?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bom_id?: string | null
+          created_at?: string
+          id?: string
+          needed_by?: string | null
+          npi_gate?: string | null
+          pr_number?: string | null
+          project_id?: string | null
+          status?: string
+          title?: string
+          total_estimated_cost?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_requisitions_bom_id_fkey"
+            columns: ["bom_id"]
+            isOneToOne: false
+            referencedRelation: "boms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       requirements: {
         Row: {
           created_at: string
@@ -455,6 +854,211 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      rfqs: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          pr_id: string | null
+          quoted_lead_days: number | null
+          quoted_price: number | null
+          response_received_at: string | null
+          rfq_number: string | null
+          sent_at: string | null
+          status: string
+          subject: string | null
+          supplier_id: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          pr_id?: string | null
+          quoted_lead_days?: number | null
+          quoted_price?: number | null
+          response_received_at?: string | null
+          rfq_number?: string | null
+          sent_at?: string | null
+          status?: string
+          subject?: string | null
+          supplier_id: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          pr_id?: string | null
+          quoted_lead_days?: number | null
+          quoted_price?: number | null
+          response_received_at?: string | null
+          rfq_number?: string | null
+          sent_at?: string | null
+          status?: string
+          subject?: string | null
+          supplier_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfqs_pr_id_fkey"
+            columns: ["pr_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_requisitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfqs_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplier_qualifications: {
+        Row: {
+          created_at: string
+          document_name: string
+          document_type: string | null
+          extracted_specs: Json
+          file_url: string | null
+          id: string
+          notes: string | null
+          qualification_status: string
+          supplier_id: string
+          user_id: string
+          valid_until: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_name: string
+          document_type?: string | null
+          extracted_specs?: Json
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          qualification_status?: string
+          supplier_id: string
+          user_id: string
+          valid_until?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_name?: string
+          document_type?: string | null
+          extracted_specs?: Json
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          qualification_status?: string
+          supplier_id?: string
+          user_id?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_qualifications_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      suppliers: {
+        Row: {
+          category: string | null
+          contact_email: string | null
+          country: string | null
+          created_at: string
+          id: string
+          name: string
+          primary_contact: string | null
+          risk_score: number
+          status: string
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          category?: string | null
+          contact_email?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          primary_contact?: string | null
+          risk_score?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          category?: string | null
+          contact_email?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          primary_contact?: string | null
+          risk_score?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      supply_risks: {
+        Row: {
+          description: string | null
+          flagged_at: string
+          id: string
+          resolved_at: string | null
+          risk_type: string
+          severity: string
+          source: string | null
+          status: string
+          supplier_id: string
+          user_id: string
+        }
+        Insert: {
+          description?: string | null
+          flagged_at?: string
+          id?: string
+          resolved_at?: string | null
+          risk_type: string
+          severity?: string
+          source?: string | null
+          status?: string
+          supplier_id: string
+          user_id: string
+        }
+        Update: {
+          description?: string | null
+          flagged_at?: string
+          id?: string
+          resolved_at?: string | null
+          risk_type?: string
+          severity?: string
+          source?: string | null
+          status?: string
+          supplier_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supply_risks_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       trace_links: {
         Row: {
