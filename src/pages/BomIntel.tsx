@@ -72,6 +72,12 @@ export default function BomIntel() {
       }
     >
       <div className="mx-auto max-w-7xl space-y-6">
+        {projectId && (
+          <div className="flex items-center gap-2 text-xs">
+            <Link to={`/projects/${projectId}`} className="text-primary hover:underline">← Back to project</Link>
+            <span className="text-muted-foreground">· Filtered to this project</span>
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {tiles.map(t => (
             <Card key={t.label} className="border-border/60 p-4">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Truck, Plus, Building2, AlertTriangle, ShieldCheck, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { statusBadge, severityBadge, riskColor } from "@/lib/intel";
 
 export default function SupplyIntel() {
+  const location = useLocation();
+  const projectId = new URLSearchParams(location.search).get("project_id");
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [risks, setRisks] = useState<any[]>([]);
   const [stats, setStats] = useState({ total: 0, qualified: 0, openRisks: 0, atRiskLT: 0 });
@@ -20,8 +22,10 @@ export default function SupplyIntel() {
   const [draft, setDraft] = useState<any>({ name: "", category: "component", country: "", contact_email: "" });
 
   const load = async () => {
+    let sq = supabase.from("suppliers").select("*").order("created_at", { ascending: false });
+    if (projectId) sq = sq.eq("project_id", projectId);
     const [{ data: s }, { data: r }, { data: lt }] = await Promise.all([
-      supabase.from("suppliers").select("*").order("created_at", { ascending: false }),
+      sq,
       supabase.from("supply_risks").select("*, suppliers(name)").eq("status", "open").order("flagged_at", { ascending: false }).limit(15),
       supabase.from("lead_time_entries").select("status").neq("status", "on_track"),
     ]);
@@ -33,13 +37,13 @@ export default function SupplyIntel() {
       atRiskLT: lt?.length ?? 0,
     });
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [projectId]);
 
   const create = async () => {
     if (!draft.name?.trim()) return;
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return;
-    const { error } = await supabase.from("suppliers").insert({ ...draft, user_id: u.user.id });
+    const { error } = await supabase.from("suppliers").insert({ ...draft, user_id: u.user.id, project_id: projectId ?? null });
     if (error) return toast.error(error.message);
     toast.success("Supplier added"); setOpen(false); setDraft({ name: "", category: "component", country: "", contact_email: "" });
     load();
@@ -80,6 +84,12 @@ export default function SupplyIntel() {
         </Dialog>
       }>
       <div className="mx-auto max-w-7xl space-y-6">
+        {projectId && (
+          <div className="flex items-center gap-2 text-xs">
+            <Link to={`/projects/${projectId}`} className="text-primary hover:underline">← Back to project</Link>
+            <span className="text-muted-foreground">· Filtered to this project</span>
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {tiles.map(t => (
             <Card key={t.label} className="border-border/60 p-4">
