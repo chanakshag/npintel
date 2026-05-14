@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Auth from "./pages/Auth";
+import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import Documents from "./pages/Documents";
 import Traceability from "./pages/Traceability";
@@ -27,8 +28,9 @@ const App = () => (
       <AuthProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/documents" element={<ProtectedRoute><Documents /></ProtectedRoute>} />
             <Route path="/traceability" element={<ProtectedRoute><Traceability /></ProtectedRoute>} />
             <Route path="/research" element={<ProtectedRoute><Research /></ProtectedRoute>} />

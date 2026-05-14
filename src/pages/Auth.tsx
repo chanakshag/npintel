@@ -19,7 +19,7 @@ const Auth = () => {
   const [name, setName] = useState("");
 
   useEffect(() => {
-    if (!authLoading && user) nav("/", { replace: true });
+    if (!authLoading && user) nav("/dashboard", { replace: true });
   }, [user, authLoading, nav]);
 
   const signIn = async (e: React.FormEvent) => {
@@ -29,7 +29,7 @@ const Auth = () => {
     setLoading(false);
     if (error) return toast.error(error.message);
     toast.success("Welcome back");
-    nav("/");
+    nav("/dashboard");
   };
 
   const signUp = async (e: React.FormEvent) => {
