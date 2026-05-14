@@ -42,6 +42,9 @@ const App = () => (
             <Route path="/workflow/:projectId" element={<ProtectedRoute><Workflow /></ProtectedRoute>} />
             <Route path="/changes" element={<ProtectedRoute><Changes /></ProtectedRoute>} />
             <Route path="/gates" element={<ProtectedRoute><Gates /></ProtectedRoute>} />
+            <Route path="/bom" element={<ProtectedRoute><BomIntel /></ProtectedRoute>} />
+            <Route path="/supply" element={<ProtectedRoute><SupplyIntel /></ProtectedRoute>} />
+            <Route path="/procurement" element={<ProtectedRoute><ProcureIntel /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
