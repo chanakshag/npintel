@@ -1,285 +1,418 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import {
   Cpu, FileText, GitBranch, MessagesSquare, ClipboardCheck, GitCompare,
-  ArrowRight, Check, Workflow, Shield, Zap, Sparkles, BookOpen,
+  ArrowRight, Clock, Unlink, UserMinus, AlertTriangle, FileWarning, TrendingDown,
+  CheckCircle2, Zap, Workflow, Linkedin, Mail, CircuitBoard,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-const products = [
-  {
-    name: "NPI Intelligence",
-    tag: "Available now",
-    tagline: "AI for hardware engineering teams",
-    description:
-      "Accelerate New Product Introduction with document intelligence, requirements traceability, gate review automation, and change impact analysis.",
-    features: [
-      "Document ingestion & semantic search",
-      "Auto-extracted requirements with traceability",
-      "Gate review checklists (EVT / DVT / PVT)",
-      "Change impact analysis across the BOM",
-    ],
-    icon: Cpu,
-    href: "/dashboard",
-    primary: true,
-  },
-  {
-    name: "Spectrum Compliance",
-    tag: "Coming soon",
-    tagline: "Continuous regulatory compliance",
-    description:
-      "Stay audit-ready across ISO, FDA, AS9100, and IATF — automated evidence collection and gap detection.",
-    features: ["Evidence vault", "Audit trail automation", "Standards mapping", "Auditor-ready exports"],
-    icon: Shield,
-    href: "#",
-    primary: false,
-  },
-  {
-    name: "Spectrum Insights",
-    tag: "Coming soon",
-    tagline: "Engineering analytics platform",
-    description:
-      "Cycle-time, defect, and quality analytics across programs — turn engineering data into executive signal.",
-    features: ["Program dashboards", "Cross-project benchmarks", "Predictive risk scoring", "Custom KPIs"],
-    icon: Sparkles,
-    href: "#",
-    primary: false,
-  },
+const DEMO_URL = "https://cal.com/spectir/demo";
+
+const Logo = ({ className = "" }: { className?: string }) => (
+  <span className={`font-bold tracking-tight text-navy ${className}`}>Spectir</span>
+);
+
+const problems = [
+  { icon: Clock, title: "Lost Engineering Hours", desc: "374 hours per engineer per year lost to manual documentation, gate review prep, and traceability work." },
+  { icon: Unlink, title: "Broken Traceability", desc: "Requirements, design decisions, test results, and supplier data siloed across tools. Gate reviews stall." },
+  { icon: UserMinus, title: "Knowledge Walks Out the Door", desc: "When an engineer leaves, their context — supplier decisions, failure history, design rationale — disappears with them." },
+  { icon: AlertTriangle, title: "Change Blind Spots", desc: "A component changes. Nobody knows which downstream documents, specs, and sign-offs are now invalid." },
+  { icon: FileWarning, title: "Gate Review Chaos", desc: "Every gate review package assembled by hand, from scratch, under deadline pressure." },
+  { icon: TrendingDown, title: "$150B at Stake", desc: "NPI cycle delays cost hard tech companies an estimated $150B annually in delayed revenue and market windows." },
 ];
 
-const npiCapabilities = [
-  { icon: FileText, title: "Document Intelligence", desc: "Datasheets, PRDs, test reports — parsed, indexed, and searchable." },
-  { icon: GitBranch, title: "Requirements Traceability", desc: "Auto-link requirements to verification artifacts across the V-model." },
-  { icon: ClipboardCheck, title: "Gate Reviews", desc: "Generate review packages for EVT, DVT, PVT, PDR, CDR in minutes." },
-  { icon: GitCompare, title: "Change Impact", desc: "See exactly what a BOM or spec change ripples into — before you commit." },
-  { icon: MessagesSquare, title: "Research Copilot", desc: "Ask the agent grounded questions across your entire knowledge base." },
-  { icon: BookOpen, title: "Knowledge Board", desc: "Persistent, shareable engineering memory for the whole team." },
+const values = [
+  { icon: ClipboardCheck, title: "Automatically Generate Gate Packages", desc: "Spectir continuously maintains living documentation so gate review packages generate themselves — not at midnight before the review." },
+  { icon: Zap, title: "Proactively Surface Change Impacts", desc: "When anything changes, Spectir instantly flags every downstream document, requirement, and sign-off affected." },
+  { icon: Workflow, title: "Run NPI Documentation Autonomously", desc: "Let your engineers focus on engineering. Spectir handles the documentation layer end-to-end." },
 ];
 
-const stats = [
-  { value: "70%", label: "Faster gate prep" },
-  { value: "12×", label: "Document throughput" },
-  { value: "100%", label: "Requirement coverage" },
-  { value: "0", label: "Lost design rationale" },
+const impact = [
+  { value: "~60%", label: "reduction in gate review prep time" },
+  { value: "374 hrs", label: "saved per engineer per year" },
+  { value: "$65B", label: "in engineering productivity unlocked across hard tech globally" },
 ];
+
+const features = [
+  { num: "01", icon: FileText, title: "Auto-Documentation", desc: "AI generates living specs, test reports, and gate review packages from structured and unstructured inputs — PRDs, meeting notes, test CSVs, supplier emails." },
+  { num: "02", icon: GitBranch, title: "Full Requirements Traceability", desc: "Every requirement linked to a design decision, linked to a test result, linked to a supplier qualification. Visual graph. Red/amber/green gate status. No broken links at review time." },
+  { num: "03", icon: MessagesSquare, title: "Research Synthesis", desc: "Upload datasheets, technical papers, and past project reports. Ask in plain English: \"Which supplier meets our thermal spec?\" — get cited, source-linked answers instantly." },
+  { num: "04", icon: GitCompare, title: "Change Propagation", desc: "Log a component change. Spectir immediately maps every downstream document, traceability link, and sign-off that needs updating. Assign tasks. Close the loop." },
+  { num: "05", icon: ClipboardCheck, title: "Gate Review Assistant", desc: "Select your gate type — EVT, DVT, PVT, PDR, CDR. AI generates the checklist based on your product and regulatory standard. Track completion. Export the full package." },
+  { num: "06", icon: Workflow, title: "NPI Workflow Builder", desc: "Build your full NPI program phase by phase — from requirements definition to pilot production. AI tailors tasks, outputs, and gate criteria to your specific product and industry." },
+];
+
+const verticals = [
+  { name: "Semiconductor", pain: "Tape-out gate sign-off across 50+ specs" },
+  { name: "Aerospace & Defense", pain: "AS9100 traceability and certification packages" },
+  { name: "Medical Devices", pain: "FDA 21 CFR 820 design history files" },
+  { name: "Automotive & EV", pain: "IATF 16949 PPAP and APQP documentation" },
+  { name: "Industrial Robotics", pain: "Functional safety and IEC 62061 evidence" },
+  { name: "Consumer Electronics", pain: "Compressed NPI cycles, global supplier coordination" },
+  { name: "Energy & Cleantech", pain: "Long validation cycles, regulatory complexity" },
+  { name: "Biotech Hardware", pain: "ISO 13485 design controls and risk files" },
+];
+
+const testimonials = [
+  { quote: "This is legitimately the tool we've needed for 10 years.", author: "NPI Engineer", company: "Semiconductor Company" },
+  { quote: "Gate review prep used to take us two days. This changes everything.", author: "Technical Program Manager", company: "Aerospace" },
+];
+
+// Visual mockup component for hero
+const HeroMockup = () => (
+  <div className="relative mx-auto max-w-4xl">
+    <div className="absolute inset-x-10 -bottom-6 h-24 rounded-full bg-primary/20 blur-3xl" />
+    <Card className="relative overflow-hidden rounded-xl border-slate-200 bg-navy p-1 shadow-2xl">
+      <div className="rounded-lg bg-navy">
+        {/* Window chrome */}
+        <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
+          <div className="h-2.5 w-2.5 rounded-full bg-white/20" />
+          <div className="h-2.5 w-2.5 rounded-full bg-white/20" />
+          <div className="h-2.5 w-2.5 rounded-full bg-white/20" />
+          <div className="ml-3 text-[11px] font-medium text-white/60">Spectir · Pump Rev B · Gate DVT Review</div>
+        </div>
+        <div className="grid gap-4 p-5 md:grid-cols-3">
+          {/* Phase progress */}
+          <div className="rounded-md border border-white/10 bg-white/5 p-4 md:col-span-2">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-white/70">Gate Readiness</span>
+              <span className="rounded bg-primary/20 px-2 py-0.5 text-[10px] font-medium text-primary-glow">DVT · 87%</span>
+            </div>
+            {[
+              { label: "Requirements verified", pct: 100, color: "bg-emerald-400" },
+              { label: "Test reports linked", pct: 92, color: "bg-emerald-400" },
+              { label: "Supplier qualification", pct: 78, color: "bg-amber-400" },
+              { label: "Change orders closed", pct: 65, color: "bg-amber-400" },
+              { label: "Risk mitigations", pct: 100, color: "bg-emerald-400" },
+            ].map(r => (
+              <div key={r.label} className="mb-2.5 last:mb-0">
+                <div className="mb-1 flex items-center justify-between text-[11px] text-white/80">
+                  <span>{r.label}</span><span className="font-mono">{r.pct}%</span>
+                </div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+                  <div className={`h-full ${r.color}`} style={{ width: `${r.pct}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Side panel */}
+          <div className="space-y-3">
+            <div className="rounded-md border border-white/10 bg-white/5 p-3">
+              <div className="text-[10px] uppercase tracking-wider text-white/60">Open issues</div>
+              <div className="mt-1 font-mono text-2xl font-semibold text-white">7</div>
+              <div className="text-[11px] text-amber-300">3 blocking gate</div>
+            </div>
+            <div className="rounded-md border border-primary/30 bg-primary/10 p-3">
+              <div className="text-[10px] uppercase tracking-wider text-primary-glow">AI summary</div>
+              <p className="mt-1 text-[11px] leading-relaxed text-white/80">
+                Ready for DVT in 4 days. 3 supplier docs pending; auto-requested.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  </div>
+);
 
 export default function Landing() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-white text-slate-700">
       {/* Nav */}
-      <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 lg:px-8">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-primary to-primary-glow shadow-elegant">
-              <Cpu className="h-4 w-4 text-primary-foreground" />
+      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-navy">
+              <CircuitBoard className="h-4 w-4 text-primary-glow" />
             </div>
-            <span className="text-sm font-semibold tracking-tight">Spectrum</span>
+            <Logo className="text-lg" />
           </Link>
-          <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
-            <a href="#products" className="transition-colors hover:text-foreground">Products</a>
-            <a href="#npi" className="transition-colors hover:text-foreground">NPI Intelligence</a>
-            <a href="#why" className="transition-colors hover:text-foreground">Why Spectrum</a>
+          <nav className="hidden items-center gap-8 text-sm font-medium text-slate-600 md:flex">
+            <a href="#features" className="transition-colors hover:text-navy">Features</a>
+            <a href="#products" className="transition-colors hover:text-navy">Products</a>
+            <a href="#contact" className="transition-colors hover:text-navy">Contact Us</a>
           </nav>
           <div className="flex items-center gap-2">
-            {user ? (
-              <Button asChild size="sm"><Link to="/dashboard">Open app <ArrowRight className="ml-1 h-3.5 w-3.5" /></Link></Button>
-            ) : (
-              <>
-                <Button asChild variant="ghost" size="sm"><Link to="/auth">Sign in</Link></Button>
-                <Button asChild size="sm"><Link to="/auth">Get started</Link></Button>
-              </>
+            {user && (
+              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+                <Link to="/dashboard">Open app</Link>
+              </Button>
             )}
+            <Button asChild size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <a href={DEMO_URL} target="_blank" rel="noreferrer">Book a Demo</a>
+            </Button>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border/60">
-        <div className="absolute inset-0 bg-grid opacity-40" />
-        <div className="absolute inset-0" style={{ backgroundImage: "var(--gradient-glow)" }} />
-        <div className="relative mx-auto max-w-7xl px-4 py-20 lg:px-8 lg:py-28">
-          <div className="mx-auto max-w-3xl text-center">
-            <Badge variant="secondary" className="mb-5 text-[10px] font-medium uppercase tracking-wider">
-              Spectrum · Engineering intelligence platform
-            </Badge>
-            <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-              Build hardware <span className="text-gradient">faster</span>, with the rigor it deserves.
+      {/* SECTION 1 — Hero */}
+      <section className="relative overflow-hidden border-b border-slate-200 bg-white">
+        <div className="absolute inset-x-0 top-0 h-[600px] bg-gradient-to-b from-slate-50 to-white" />
+        <div className="relative mx-auto max-w-7xl px-4 pt-20 pb-16 lg:px-8 lg:pt-28">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              AI for Physical Product Development
+            </div>
+            <h1 className="text-balance text-4xl font-bold leading-[1.05] tracking-tight text-navy md:text-6xl lg:text-7xl">
+              Put Hardware Development on Autopilot
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-balance text-base text-muted-foreground md:text-lg">
-              Spectrum is the AI platform for hardware teams. Our flagship product — <span className="font-medium text-foreground">NPI Intelligence</span> —
-              turns scattered documents, requirements, and reviews into a single source of engineering truth.
+            <p className="mx-auto mt-6 max-w-2xl text-balance text-base leading-relaxed text-slate-600 md:text-lg">
+              Spectir owns the full NPI workflow end-to-end — documentation, traceability, research synthesis,
+              and change propagation — freeing your engineers to build, not document.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Button asChild size="lg">
-                <Link to={user ? "/dashboard" : "/auth"}>
-                  Try NPI Intelligence <ArrowRight className="ml-1.5 h-4 w-4" />
-                </Link>
+              <Button asChild variant="outline" size="lg" className="border-navy/20 text-navy hover:bg-navy/5">
+                <a href="#features">Learn More</a>
               </Button>
-              <Button asChild variant="outline" size="lg"><a href="#products">Explore products</a></Button>
+              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <a href={DEMO_URL} target="_blank" rel="noreferrer">Book a Demo <ArrowRight className="ml-1.5 h-4 w-4" /></a>
+              </Button>
             </div>
           </div>
-
-          <div className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-3 md:grid-cols-4">
-            {stats.map(s => (
-              <Card key={s.label} className="border-border/60 bg-background/50 p-4 text-center backdrop-blur">
-                <div className="font-mono text-2xl font-semibold tracking-tight text-primary">{s.value}</div>
-                <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
-              </Card>
-            ))}
+          <div className="mt-16">
+            <HeroMockup />
           </div>
         </div>
       </section>
 
-      {/* Products */}
-      <section id="products" className="border-b border-border/60 py-20 lg:py-28">
+      {/* SECTION 2 — Social proof */}
+      <section className="border-b border-slate-200 bg-slate-50/60 py-12">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <Badge variant="outline" className="mb-3 text-[10px] uppercase tracking-wider">Product suite</Badge>
-            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">One platform. Built for hardware.</h2>
-            <p className="mt-3 text-muted-foreground">
-              Spectrum is a growing suite of AI products for engineering teams. Start with NPI Intelligence today.
+          <p className="text-center text-xs font-semibold uppercase tracking-widest text-slate-500">
+            Trusted by hardware teams building the physical world
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-sm font-medium text-slate-400">
+            {["Semiconductor", "Aerospace", "Medical Devices", "Automotive", "Industrial"].map(l => (
+              <span key={l} className="tracking-wide">{l}</span>
+            ))}
+          </div>
+          <p className="mt-6 text-center text-sm text-slate-600">
+            Eliminating <span className="font-semibold text-navy">374 hours</span> of manual documentation overhead per engineer, per year
+          </p>
+        </div>
+      </section>
+
+      {/* SECTION 3 — Problem */}
+      <section className="border-b border-slate-200 bg-white py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-navy md:text-4xl">
+              Manual documentation is killing your NPI cycle
+            </h2>
+            <p className="mt-4 text-base text-slate-600 md:text-lg">
+              Hardware engineers spend 30–40% of their time not building — but documenting. Every gate review,
+              every component change, every supplier qualification — done by hand, in Word docs and emails.
             </p>
           </div>
-
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
-            {products.map(p => (
-              <Card
-                key={p.name}
-                className={`relative flex flex-col overflow-hidden border-border/60 p-6 transition-shadow hover:shadow-elegant ${
-                  p.primary ? "ring-1 ring-primary/40" : ""
-                }`}
-              >
-                {p.primary && (
-                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-primary-glow" />
-                )}
-                <div className="flex items-center justify-between">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/15 ring-1 ring-primary/30">
-                    <p.icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <Badge variant={p.primary ? "default" : "secondary"} className="text-[10px]">{p.tag}</Badge>
+          <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {problems.map(p => (
+              <Card key={p.title} className="group border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-primary/40 hover:shadow-md">
+                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <p.icon className="h-5 w-5" />
                 </div>
-                <h3 className="mt-4 text-lg font-semibold tracking-tight">{p.name}</h3>
-                <p className="mt-0.5 text-xs uppercase tracking-wider text-primary">{p.tagline}</p>
-                <p className="mt-3 text-sm text-muted-foreground">{p.description}</p>
-                <ul className="mt-4 flex-1 space-y-2">
-                  {p.features.map(f => (
-                    <li key={f} className="flex items-start gap-2 text-sm">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-6">
-                  {p.primary ? (
-                    <Button asChild className="w-full">
-                      <Link to={user ? p.href : "/auth"}>Open NPI Intelligence <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
-                    </Button>
-                  ) : (
-                    <Button variant="outline" className="w-full" disabled>Join waitlist</Button>
-                  )}
-                </div>
+                <h3 className="mt-4 text-lg font-semibold text-navy">{p.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{p.desc}</p>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* NPI deep-dive */}
-      <section id="npi" className="border-b border-border/60 py-20 lg:py-28">
+      {/* SECTION 4 — Value */}
+      <section className="border-b border-slate-200 bg-slate-50/60 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div>
-              <Badge variant="secondary" className="mb-3 text-[10px] uppercase tracking-wider">Spectrum NPI Intelligence</Badge>
-              <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-                Your engineering knowledge base, <span className="text-gradient">automated.</span>
-              </h2>
-              <p className="mt-4 text-muted-foreground">
-                Drop in datasheets, PRDs, and test reports. The agent extracts requirements, builds traceability,
-                runs gate reviews, and answers grounded engineering questions — across every project, instantly.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Button asChild><Link to={user ? "/dashboard" : "/auth"}>Get started <ArrowRight className="ml-1.5 h-4 w-4" /></Link></Button>
-                <Button asChild variant="outline"><Link to={user ? "/projects" : "/auth"}>Create a project</Link></Button>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              {npiCapabilities.map(c => (
-                <Card key={c.title} className="border-border/60 p-4">
-                  <c.icon className="h-5 w-5 text-primary" />
-                  <h4 className="mt-3 text-sm font-semibold">{c.title}</h4>
-                  <p className="mt-1 text-xs text-muted-foreground">{c.desc}</p>
-                </Card>
-              ))}
-            </div>
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-navy md:text-4xl">
+              What Spectir brings to your NPI team
+            </h2>
+          </div>
+          <div className="mt-14 grid gap-6 lg:grid-cols-3">
+            {values.map(v => (
+              <Card key={v.title} className="border-slate-200 bg-white p-7 shadow-sm">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-navy text-primary-glow">
+                  <v.icon className="h-6 w-6" />
+                </div>
+                <h3 className="mt-5 text-xl font-semibold text-navy">{v.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{v.desc}</p>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Why */}
-      <section id="why" className="border-b border-border/60 py-20 lg:py-28">
+      {/* SECTION 5 — Impact */}
+      <section className="border-b border-slate-200 bg-white py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <Badge variant="outline" className="mb-3 text-[10px] uppercase tracking-wider">Why Spectrum</Badge>
-            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">Built for the way hardware actually ships.</h2>
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-navy md:text-4xl">
+              We're here to make a real impact in physical product development
+            </h2>
           </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {[
-              { icon: Workflow, title: "Tailored workflows", desc: "Every project gets a workflow generated for its industry and gate standard." },
-              { icon: Zap, title: "Grounded AI", desc: "Answers cite the source document and section. No hallucinated specs." },
-              { icon: Shield, title: "Audit-ready", desc: "Full traceability, immutable change log, exportable review packages." },
-            ].map(b => (
-              <div key={b.title} className="text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-md bg-primary/15 ring-1 ring-primary/30">
-                  <b.icon className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="mt-4 font-semibold">{b.title}</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">{b.desc}</p>
+          <div className="mt-14 grid gap-8 md:grid-cols-3">
+            {impact.map(s => (
+              <div key={s.label} className="text-center">
+                <div className="text-5xl font-bold tracking-tight text-primary md:text-6xl">{s.value}</div>
+                <p className="mx-auto mt-3 max-w-xs text-sm text-slate-600">{s.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 lg:py-28">
-        <div className="mx-auto max-w-4xl px-4 lg:px-8">
-          <Card className="relative overflow-hidden border-border/60 p-10 text-center md:p-14">
-            <div className="absolute inset-0 opacity-80" style={{ backgroundImage: "var(--gradient-glow)" }} />
-            <div className="relative">
-              <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-                Ship your next product with Spectrum.
-              </h2>
-              <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-                Start free with NPI Intelligence. No credit card required.
-              </p>
-              <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-                <Button asChild size="lg">
-                  <Link to={user ? "/dashboard" : "/auth"}>
-                    {user ? "Open app" : "Get started free"} <ArrowRight className="ml-1.5 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg"><a href="#products">See all products</a></Button>
+      {/* SECTION 6 — Features */}
+      <section id="features" className="border-b border-slate-200 bg-slate-50/60 py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-navy md:text-4xl">
+              Spectir delivers a seamless NPI workflow for your team
+            </h2>
+            <p className="mt-4 text-base text-slate-600 md:text-lg">
+              From requirements definition to gate review sign-off — all connected, all traceable, all automated.
+            </p>
+          </div>
+          <div className="mt-16 space-y-16 lg:space-y-24">
+            {features.map((f, i) => {
+              const reverse = i % 2 === 1;
+              return (
+                <div key={f.num} className="grid gap-10 lg:grid-cols-2 lg:items-center">
+                  <div className={reverse ? "lg:order-2" : ""}>
+                    <div className="font-mono text-sm font-semibold text-primary">[{f.num}]</div>
+                    <h3 className="mt-2 text-2xl font-bold tracking-tight text-navy md:text-3xl">{f.title}</h3>
+                    <p className="mt-4 text-base leading-relaxed text-slate-600">{f.desc}</p>
+                  </div>
+                  <div className={reverse ? "lg:order-1" : ""}>
+                    <Card className="overflow-hidden border-slate-200 bg-white p-1 shadow-md">
+                      <div className="rounded-md bg-navy p-6">
+                        <div className="flex items-center gap-2 border-b border-white/10 pb-3">
+                          <f.icon className="h-4 w-4 text-primary-glow" />
+                          <span className="text-xs font-semibold uppercase tracking-wider text-white/70">{f.title}</span>
+                        </div>
+                        <div className="mt-4 space-y-2.5">
+                          {[0, 1, 2, 3].map(n => (
+                            <div key={n} className="flex items-center gap-3 rounded-md border border-white/10 bg-white/5 px-3 py-2.5">
+                              <CheckCircle2 className="h-4 w-4 shrink-0 text-primary-glow" />
+                              <div className="h-2 flex-1 rounded-full bg-white/10">
+                                <div className="h-full rounded-full bg-primary-glow/60" style={{ width: `${85 - n * 15}%` }} />
+                              </div>
+                              <span className="font-mono text-[10px] text-white/60">{(85 - n * 15)}%</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </Card>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 7 — Products */}
+      <section id="products" className="border-b border-slate-200 bg-white py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-navy md:text-4xl">
+              Built for every hard tech vertical
+            </h2>
+            <p className="mt-4 text-base text-slate-600 md:text-lg">
+              One platform. Eight industries. The same NPI pain — finally solved.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {verticals.map(v => (
+              <Card key={v.name} className="border-slate-200 bg-white p-5 shadow-sm transition-colors hover:border-primary/40">
+                <h3 className="text-sm font-semibold text-navy">{v.name}</h3>
+                <p className="mt-1.5 text-xs leading-relaxed text-slate-600">{v.pain}</p>
+              </Card>
+            ))}
+          </div>
+
+          <Card className="mt-10 overflow-hidden border-primary/30 bg-gradient-to-br from-white to-primary/5 p-8 shadow-md md:p-10">
+            <div className="grid gap-6 md:grid-cols-[auto_1fr_auto] md:items-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-navy">
+                <Cpu className="h-7 w-7 text-primary-glow" />
               </div>
+              <div>
+                <h3 className="text-2xl font-bold tracking-tight text-navy">Spectir NPI Intel</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  The AI agent for physical product development. Automates documentation, traceability, and knowledge work for hardware engineering teams from concept to production.
+                </p>
+              </div>
+              <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <Link to={user ? "/dashboard" : "/auth"}>Learn More <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
+              </Button>
             </div>
           </Card>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border/60 py-10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 text-xs text-muted-foreground md:flex-row lg:px-8">
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded bg-gradient-to-br from-primary to-primary-glow">
-              <Cpu className="h-3 w-3 text-primary-foreground" />
-            </div>
-            <span className="font-medium text-foreground">Spectrum</span>
-            <span>· Engineering intelligence platform</span>
+      {/* SECTION 8 — Testimonials */}
+      <section className="border-b border-slate-200 bg-slate-50/60 py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-navy md:text-4xl">
+              Don't take our word for it. See what others say.
+            </h2>
+            <p className="mt-4 text-base text-slate-600 md:text-lg">
+              Hardware engineers use Spectir to eliminate documentation overhead and ship faster.
+            </p>
           </div>
-          <div>© {new Date().getFullYear()} Spectrum. All rights reserved.</div>
+          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+            {testimonials.map(t => (
+              <Card key={t.author} className="border-slate-200 bg-white p-8 shadow-sm">
+                <div className="font-mono text-3xl leading-none text-primary">"</div>
+                <p className="mt-3 text-lg leading-relaxed text-navy">{t.quote}</p>
+                <div className="mt-6 border-t border-slate-200 pt-4">
+                  <div className="text-sm font-semibold text-navy">{t.author}</div>
+                  <div className="text-xs text-slate-500">{t.company}</div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 9 — CTA */}
+      <section id="contact" className="bg-navy py-20 lg:py-28">
+        <div className="mx-auto max-w-4xl px-4 text-center lg:px-8">
+          <h2 className="text-3xl font-bold tracking-tight text-white md:text-5xl">Book a Call</h2>
+          <p className="mx-auto mt-5 max-w-xl text-base text-white/70 md:text-lg">
+            Take 30 minutes to see if Spectir can put your NPI documentation on autopilot.
+          </p>
+          <Button asChild size="lg" className="mt-8 bg-primary text-primary-foreground hover:bg-primary/90">
+            <a href={DEMO_URL} target="_blank" rel="noreferrer">Book a Demo <ArrowRight className="ml-1.5 h-4 w-4" /></a>
+          </Button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-navy py-10 text-white/70">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="flex flex-col items-start justify-between gap-6 border-t border-white/10 pt-8 md:flex-row md:items-center">
+            <div className="flex items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
+                <CircuitBoard className="h-3.5 w-3.5 text-white" />
+              </div>
+              <span className="text-base font-bold tracking-tight text-white">Spectir</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-5 text-sm">
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-white">
+                <Linkedin className="h-4 w-4" /> LinkedIn
+              </a>
+              <a href="mailto:contact@spectir.ai" className="inline-flex items-center gap-1.5 transition-colors hover:text-white">
+                <Mail className="h-4 w-4" /> contact@spectir.ai
+              </a>
+              <a href="#" className="transition-colors hover:text-white">Privacy Policy</a>
+              <a href="#" className="transition-colors hover:text-white">Terms of Service</a>
+            </div>
+          </div>
+          <div className="mt-6 text-xs text-white/50">© Spectir 2026</div>
         </div>
       </footer>
     </div>
