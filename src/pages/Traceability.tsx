@@ -305,6 +305,8 @@ const Traceability = () => {
             </ul>
           </Card>
         )}
+        </>
+        )}
       </div>
     </AppLayout>
   );
