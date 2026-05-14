@@ -91,6 +91,17 @@ const Documents = () => {
     load();
   };
 
+  const openDoc = async (d: Doc) => {
+    const { data, error } = await supabase.storage
+      .from("documents")
+      .createSignedUrl(d.file_path, 3600);
+    if (error || !data?.signedUrl) {
+      toast.error(error?.message ?? "Could not open document");
+      return;
+    }
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  };
+
   const filtered = docs.filter((d) =>
     !query || d.name.toLowerCase().includes(query.toLowerCase()) || d.summary?.toLowerCase().includes(query.toLowerCase())
   );
