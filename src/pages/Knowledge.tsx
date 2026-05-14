@@ -17,6 +17,8 @@ import {
   BookOpen, Upload, Loader2, Trash2, Sparkles, Search, FileText, Wand2, Download, Library, Tag, FileType, FileDown,
 } from "lucide-react";
 import { downloadMarkdown, downloadPdf, downloadDocx } from "@/lib/exportArtifact";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
 
 type Source = {
