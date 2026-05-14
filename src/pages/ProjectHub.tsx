@@ -72,16 +72,24 @@ export default function ProjectHub() {
     if (!project || !user) return;
     setGeneratingPrd(true);
     try {
+      // Pull document context for grounded PRD
+      const { data: projDocs } = await supabase
+        .from("documents")
+        .select("name, category, summary, key_points")
+        .eq("project_id", project.id)
+        .eq("status", "ready")
+        .neq("category", "PRD");
       const content = await callIntelAi("prd_generate", {
         product_description: project.product_description,
         industry: project.industry,
         gate_standard: project.gate_standard,
         requirements: reqs,
+        documents: projDocs ?? [],
       });
       const { error } = await supabase.from("documents").insert({
         user_id: user.id, project_id: project.id, name: `PRD — ${project.name}`,
-        category: "PRD", summary: content.slice(0, 500), key_points: [], status: "ready",
-        file_path: `prd/${project.id}.md`, mime_type: "text/markdown",
+        category: "PRD", summary: content, key_points: [], status: "ready",
+        file_path: `prd/${project.id}-${Date.now()}.md`, mime_type: "text/markdown",
       });
       if (error) throw error;
       toast.success("PRD generated");
