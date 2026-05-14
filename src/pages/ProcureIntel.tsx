@@ -7,6 +7,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { statusBadge } from "@/lib/intel";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
+import { useProject } from "@/hooks/useProject";
 
 const STAGES = [
   { key: "draft", label: "Draft" },
@@ -17,19 +19,18 @@ const STAGES = [
 ];
 
 export default function ProcureIntel() {
-  const location = useLocation();
-  const projectId = new URLSearchParams(location.search).get("project_id");
+  const { projectId, project } = useProject();
   const [prs, setPrs] = useState<any[]>([]);
   const [stats, setStats] = useState({ openPrs: 0, monthSpend: 0, openRfqs: 0, posPending: 0 });
 
   const load = async () => {
+    if (!projectId) return;
     const monthStart = new Date(); monthStart.setDate(1);
-    let prq = supabase.from("purchase_requisitions").select("*, pr_items(quantity, unit_cost)").order("updated_at", { ascending: false });
-    if (projectId) prq = prq.eq("project_id", projectId);
     const [{ data: prData }, { data: rfqs }, { data: pos }] = await Promise.all([
-      prq,
-      supabase.from("rfqs").select("status").in("status", ["draft", "sent"]),
-      supabase.from("purchase_orders").select("total_amount, created_at, status"),
+      supabase.from("purchase_requisitions").select("*, pr_items(quantity, unit_cost)")
+        .eq("project_id", projectId).order("updated_at", { ascending: false }),
+      supabase.from("rfqs").select("status").eq("project_id", projectId).in("status", ["draft", "sent"]),
+      supabase.from("purchase_orders").select("total_amount, created_at, status").eq("project_id", projectId),
     ]);
     const monthSpend = (pos ?? []).filter(p => p.created_at >= monthStart.toISOString()).reduce((s, p) => s + Number(p.total_amount ?? 0), 0);
     setPrs(prData ?? []);
