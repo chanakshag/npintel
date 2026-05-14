@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Plus, GitBranch, Trash2, Link2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { useProject } from "@/hooks/useProject";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
 
 type Req = {
   id: string; ref_id: string; title: string; description: string | null;
