@@ -10,22 +10,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { statusBadge } from "@/lib/intel";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
+import { useProject } from "@/hooks/useProject";
 
 type Bom = { id: string; name: string; version: string; status: string; updated_at: string };
 
 export default function BomIntel() {
-  const location = useLocation();
-  const projectId = new URLSearchParams(location.search).get("project_id");
+  const { projectId, project } = useProject();
   const [boms, setBoms] = useState<Bom[]>([]);
   const [stats, setStats] = useState({ total: 0, components: 0, atRisk: 0, cost: 0 });
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
 
   const load = async () => {
-    let bq = supabase.from("boms").select("id,name,version,status,updated_at").order("updated_at", { ascending: false });
-    if (projectId) bq = bq.eq("project_id", projectId);
-    const { data: bomList } = await bq;
-    const { data: items } = await supabase.from("bom_items").select("status,unit_cost,quantity");
+    if (!projectId) return;
+    const { data: bomList } = await supabase.from("boms").select("id,name,version,status,updated_at,project_id")
+      .eq("project_id", projectId).order("updated_at", { ascending: false });
+    const bomIds = (bomList ?? []).map((b: any) => b.id);
+    let items: any[] = [];
+    if (bomIds.length) {
+      const { data } = await supabase.from("bom_items").select("status,unit_cost,quantity,bom_id").in("bom_id", bomIds);
+      items = data ?? [];
+    }
     setBoms(bomList ?? []);
     const cost = (items ?? []).reduce((s, i: any) => s + (Number(i.unit_cost ?? 0) * Number(i.quantity ?? 0)), 0);
     const atRisk = (items ?? []).filter((i: any) => ["eol", "at_risk", "substitute_needed"].includes(i.status)).length;
