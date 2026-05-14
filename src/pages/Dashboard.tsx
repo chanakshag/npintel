@@ -21,17 +21,35 @@ const Dashboard = () => {
   const [stats, setStats] = useState<Stats>({ documents: 0, requirements: 0, links: 0, gates: 0, boms: 0, suppliers: 0, prs: 0 });
   const [recentDocs, setRecentDocs] = useState<any[]>([]);
 
+  const [activeProject, setActiveProject] = useState<{ id: string; name: string } | null>(null);
+
   useEffect(() => {
     (async () => {
+      const { data: proj } = await supabase
+        .from("projects")
+        .select("id,name")
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const pid = (proj as any)?.id ?? null;
+      setActiveProject((proj as any) ?? null);
+
+      if (!pid) {
+        setStats({ documents: 0, requirements: 0, links: 0, gates: 0, boms: 0, suppliers: 0, prs: 0 });
+        setRecentDocs([]);
+        return;
+      }
+
+      const scoped = (q: any) => q.eq("project_id", pid);
       const [d, r, l, g, rd, b, s, p] = await Promise.all([
-        supabase.from("documents").select("id", { count: "exact", head: true }),
-        supabase.from("requirements").select("id", { count: "exact", head: true }),
-        supabase.from("trace_links").select("id", { count: "exact", head: true }),
-        supabase.from("gate_reviews").select("id", { count: "exact", head: true }),
-        supabase.from("documents").select("*").order("created_at", { ascending: false }).limit(5),
-        supabase.from("boms").select("id", { count: "exact", head: true }),
-        supabase.from("suppliers").select("id", { count: "exact", head: true }),
-        supabase.from("purchase_requisitions").select("id", { count: "exact", head: true }),
+        scoped(supabase.from("documents").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("requirements").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("trace_links").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("gate_reviews").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("documents").select("*").order("created_at", { ascending: false }).limit(5)),
+        scoped(supabase.from("boms").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("suppliers").select("id", { count: "exact", head: true })),
+        scoped(supabase.from("purchase_requisitions").select("id", { count: "exact", head: true })),
       ]);
       setStats({
         documents: d.count ?? 0,
@@ -68,7 +86,9 @@ const Dashboard = () => {
                 <Badge variant="secondary" className="mb-2 text-[10px] font-medium uppercase tracking-wider">NPI Agent · Online</Badge>
                 <h2 className="text-xl font-semibold tracking-tight">Your engineering knowledge base, automated.</h2>
                 <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-                  Create a project → upload documents → extract requirements → generate PRD → build BOM → qualify suppliers → raise POs. One workflow, end to end.
+                  {activeProject
+                    ? <>Showing data for <Link to={`/projects/${activeProject.id}`} className="font-medium text-primary hover:underline">{activeProject.name}</Link>. <Link to="/projects" className="text-primary hover:underline">Switch project</Link>.</>
+                    : <>Create a project → upload documents → extract requirements → generate PRD → build BOM → qualify suppliers → raise POs. <Link to="/projects" className="text-primary hover:underline">Start a project</Link>.</>}
                 </p>
               </div>
             </div>

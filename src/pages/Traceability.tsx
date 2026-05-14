@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/AppLayout";
@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Plus, GitBranch, Trash2, Link2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { useProject } from "@/hooks/useProject";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
 
 type Req = {
   id: string; ref_id: string; title: string; description: string | null;
@@ -25,8 +27,7 @@ const GATES = ["PDR", "EVT", "DVT", "PVT", "CDR"];
 
 const Traceability = () => {
   const { user } = useAuth();
-  const location = useLocation();
-  const projectId = useMemo(() => new URLSearchParams(location.search).get("project_id"), [location.search]);
+  const { projectId, project } = useProject();
   const [reqs, setReqs] = useState<Req[]>([]);
   const [links, setLinks] = useState<Link[]>([]);
   const [filterSub, setFilterSub] = useState<string>("all");
@@ -43,11 +44,10 @@ const Traceability = () => {
   const [linkType, setLinkType] = useState("derives");
 
   const load = async () => {
-    let rq = supabase.from("requirements").select("*").order("ref_id");
-    if (projectId) rq = rq.eq("project_id", projectId);
+    if (!projectId) { setReqs([]); setLinks([]); return; }
     const [r, l] = await Promise.all([
-      rq,
-      supabase.from("trace_links").select("*"),
+      supabase.from("requirements").select("*").eq("project_id", projectId).order("ref_id"),
+      supabase.from("trace_links").select("*").eq("project_id", projectId),
     ]);
     setReqs((r.data as any) ?? []);
     setLinks((l.data as any) ?? []);
@@ -56,8 +56,9 @@ const Traceability = () => {
 
   const addReq = async () => {
     if (!user) return;
+    if (!projectId) return toast.error("Open a project first");
     if (!form.ref_id || !form.title) return toast.error("Ref ID and title required");
-    const { error } = await supabase.from("requirements").insert({ ...form, user_id: user.id, project_id: projectId ?? null });
+    const { error } = await supabase.from("requirements").insert({ ...form, user_id: user.id, project_id: projectId });
     if (error) return toast.error(error.message);
     toast.success("Requirement added");
     setOpen(false);
@@ -188,12 +189,12 @@ const Traceability = () => {
       }
     >
       <div className="mx-auto max-w-7xl space-y-4">
-        {projectId && (
-          <div className="flex items-center gap-2 text-xs">
-            <Link to={`/projects/${projectId}`} className="text-primary hover:underline">← Back to project</Link>
-            <span className="text-muted-foreground">· Filtered to this project</span>
-          </div>
-        )}
+        <ProjectBreadcrumb project={project} currentPage="Traceability" />
+        {!projectId ? (
+          <NoProjectGuard message="Requirements and trace links are scoped per project. Pick a project to view or build the traceability matrix." hard />
+        ) : (
+        <>
+
         {/* Filters + alert */}
         <div className="flex flex-wrap items-center gap-3">
           <Select value={filterSub} onValueChange={setFilterSub}>
@@ -303,6 +304,8 @@ const Traceability = () => {
               })}
             </ul>
           </Card>
+        )}
+        </>
         )}
       </div>
     </AppLayout>

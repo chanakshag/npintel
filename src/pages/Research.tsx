@@ -10,6 +10,8 @@ import { Send, Sparkles, User, Bot, Loader2, FileText } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useProject } from "@/hooks/useProject";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
 
 type Msg = { id?: string; role: "user" | "assistant"; content: string };
 
@@ -22,6 +24,7 @@ const SUGGESTIONS = [
 
 const Research = () => {
   const { user } = useAuth();
+  const { projectId, project } = useProject();
   const [searchParams, setSearchParams] = useSearchParams();
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -34,12 +37,14 @@ const Research = () => {
     (async () => {
       const [hist, dc] = await Promise.all([
         supabase.from("chat_messages").select("*").order("created_at", { ascending: true }).limit(50),
-        supabase.from("documents").select("id", { count: "exact", head: true }),
+        projectId
+          ? supabase.from("documents").select("id", { count: "exact", head: true }).eq("project_id", projectId)
+          : Promise.resolve({ count: 0 } as any),
       ]);
       setMessages((hist.data as any[])?.map(m => ({ id: m.id, role: m.role, content: m.content })) ?? []);
       setDocCount(dc.count ?? 0);
     })();
-  }, []);
+  }, [projectId]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -91,7 +96,7 @@ const Research = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: next.map(m => ({ role: m.role, content: m.content })) }),
+        body: JSON.stringify({ messages: next.map(m => ({ role: m.role, content: m.content })), project_id: projectId }),
       });
 
       if (resp.status === 429) { toast.error("Rate limited. Try again in a moment."); setStreaming(false); return; }
@@ -138,6 +143,7 @@ const Research = () => {
       description={`Ask natural-language questions across your ${docCount} indexed document${docCount === 1 ? "" : "s"}.`}
     >
       <div className="mx-auto flex h-[calc(100vh-7rem)] max-w-4xl flex-col">
+        {project && <div className="pb-3"><ProjectBreadcrumb project={project} currentPage="Research" /></div>}
         <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto pb-4">
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
