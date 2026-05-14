@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/AppLayout";
@@ -23,6 +24,8 @@ type Doc = {
 
 const Documents = () => {
   const { user } = useAuth();
+  const location = useLocation();
+  const projectId = useMemo(() => new URLSearchParams(location.search).get("project_id"), [location.search]);
   const [docs, setDocs] = useState<Doc[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -31,13 +34,15 @@ const Documents = () => {
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from("documents").select("*").order("created_at", { ascending: false });
+    let q = supabase.from("documents").select("*").order("created_at", { ascending: false });
+    if (projectId) q = q.eq("project_id", projectId);
+    const { data, error } = await q;
     if (error) toast.error(error.message);
     setDocs((data as any) ?? []);
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [projectId]);
 
   const handleUpload = async (file: File) => {
     if (!user) return;
@@ -52,6 +57,7 @@ const Documents = () => {
         .from("documents")
         .insert({
           user_id: user.id,
+          project_id: projectId ?? null,
           name: file.name,
           file_path: path,
           mime_type: file.type,
