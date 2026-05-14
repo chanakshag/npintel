@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useProject } from "@/hooks/useProject";
+import { ProjectBreadcrumb, NoProjectGuard } from "@/components/ProjectBreadcrumb";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/AppLayout";
