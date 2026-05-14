@@ -86,7 +86,9 @@ const Dashboard = () => {
                 <Badge variant="secondary" className="mb-2 text-[10px] font-medium uppercase tracking-wider">NPI Agent · Online</Badge>
                 <h2 className="text-xl font-semibold tracking-tight">Your engineering knowledge base, automated.</h2>
                 <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-                  Create a project → upload documents → extract requirements → generate PRD → build BOM → qualify suppliers → raise POs. One workflow, end to end.
+                  {activeProject
+                    ? <>Showing data for <Link to={`/projects/${activeProject.id}`} className="font-medium text-primary hover:underline">{activeProject.name}</Link>. <Link to="/projects" className="text-primary hover:underline">Switch project</Link>.</>
+                    : <>Create a project → upload documents → extract requirements → generate PRD → build BOM → qualify suppliers → raise POs. <Link to="/projects" className="text-primary hover:underline">Start a project</Link>.</>}
                 </p>
               </div>
             </div>
