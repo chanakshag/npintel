@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/AppLayout";
@@ -24,6 +25,8 @@ const GATES = ["PDR", "EVT", "DVT", "PVT", "CDR"];
 
 const Traceability = () => {
   const { user } = useAuth();
+  const location = useLocation();
+  const projectId = useMemo(() => new URLSearchParams(location.search).get("project_id"), [location.search]);
   const [reqs, setReqs] = useState<Req[]>([]);
   const [links, setLinks] = useState<Link[]>([]);
   const [filterSub, setFilterSub] = useState<string>("all");
@@ -40,19 +43,21 @@ const Traceability = () => {
   const [linkType, setLinkType] = useState("derives");
 
   const load = async () => {
+    let rq = supabase.from("requirements").select("*").order("ref_id");
+    if (projectId) rq = rq.eq("project_id", projectId);
     const [r, l] = await Promise.all([
-      supabase.from("requirements").select("*").order("ref_id"),
+      rq,
       supabase.from("trace_links").select("*"),
     ]);
     setReqs((r.data as any) ?? []);
     setLinks((l.data as any) ?? []);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [projectId]);
 
   const addReq = async () => {
     if (!user) return;
     if (!form.ref_id || !form.title) return toast.error("Ref ID and title required");
-    const { error } = await supabase.from("requirements").insert({ ...form, user_id: user.id });
+    const { error } = await supabase.from("requirements").insert({ ...form, user_id: user.id, project_id: projectId ?? null });
     if (error) return toast.error(error.message);
     toast.success("Requirement added");
     setOpen(false);
@@ -182,6 +187,12 @@ const Traceability = () => {
       }
     >
       <div className="mx-auto max-w-7xl space-y-4">
+        {projectId && (
+          <div className="flex items-center gap-2 text-xs">
+            <Link to={`/projects/${projectId}`} className="text-primary hover:underline">← Back to project</Link>
+            <span className="text-muted-foreground">· Filtered to this project</span>
+          </div>
+        )}
         {/* Filters + alert */}
         <div className="flex flex-wrap items-center gap-3">
           <Select value={filterSub} onValueChange={setFilterSub}>
