@@ -71,22 +71,72 @@ Notes: ${p.notes ?? "—"}
 
 Use only '##' / '###' headings. Sections: ## Purchase Order, ## Supplier, ## Line Items (table), ## Terms & Conditions (standard NPI procurement boilerplate), ## Acknowledgement.`,
 
-  prd_generate: (p) => `You are an expert hardware product manager. Generate a comprehensive Product Requirements Document (PRD) for a ${p.product_description} in the ${p.industry} industry following ${p.gate_standard} standards.
+  prd_generate: (p) => `You are a senior hardware product manager and systems engineer writing a production-grade Product Requirements Document (PRD) for a **${p.product_description}** in the **${p.industry}** industry, governed by **${p.gate_standard}** standards.
 
-Use these extracted requirements as the basis:
-${(p.requirements ?? []).map((r: any) => `- ${r.ref_id ?? ""} ${r.title}${r.description ? `: ${r.description}` : ""}`).join("\n") || "(no requirements extracted yet — infer reasonable defaults from the product description)"}
+EXTRACTED REQUIREMENTS (use as authoritative baseline; cite ref_id inline where relevant):
+${(p.requirements ?? []).map((r: any) => `- ${r.ref_id ?? ""} ${r.title}${r.description ? `: ${r.description}` : ""}`).join("\n") || "(none extracted — infer industry-defensible defaults and flag them as ASSUMPTIONS)"}
 
-Use ONLY '##' / '###' headings (never '#'). Structure the PRD with these sections:
-## Executive Summary
-## Product Overview
-## Functional Requirements
-## Non-Functional Requirements
-## Technical Constraints
-## Regulatory Requirements
-## Success Criteria
-## Open Questions
+PROJECT DOCUMENTS (use as grounding; cite [Doc N] inline):
+${(p.documents ?? []).map((d: any, i: number) => `[Doc ${i + 1}] ${d.name} (${d.category ?? "?"})\nSummary: ${d.summary ?? "n/a"}\nKey points: ${(d.key_points ?? []).join("; ") || "n/a"}`).join("\n\n") || "(no supporting documents — rely on industry best practices)"}
 
-Be specific and engineering-grade. ~800-1200 words.`,
+Write a thorough, engineering-grade PRD. Target **2500–3500 words**. Be SPECIFIC: real numbers (units, tolerances, ranges), real standards (IPC, ISO, IEC, MIL-STD, FCC, FDA, AEC-Q, ASTM, RTCA DO-254/DO-178C, IATF 16949, etc.), real interfaces (I2C, SPI, CAN-FD, MIPI CSI-2, PCIe Gen4, USB-C PD), real materials, and real test methods. Avoid generic fluff. Use markdown tables wherever you compare ≥3 items.
+
+Use ONLY '##' / '###' headings (NEVER '#', '####', or deeper). Required structure:
+
+## 1. Executive Summary
+2–3 paragraphs: problem, target users, proposed solution, expected business outcome, gate alignment.
+
+## 2. Goals & Non-Goals
+### 2.1 In-scope goals (numbered, measurable)
+### 2.2 Explicit non-goals
+### 2.3 Success Metrics
+KPI table: Metric | Target | Measurement method | Gate.
+
+## 3. Users & Use Cases
+### 3.1 Personas (2–4) with motivations and pain points
+### 3.2 Primary use cases / user journeys (numbered, with pre/post-conditions)
+### 3.3 Operating environments
+
+## 4. System Overview & Architecture
+Block-level architecture description (subsystems, interfaces, data flow). Reference the documents where relevant.
+
+## 5. Functional Requirements
+Numbered table FR-001…FR-NNN: ID | Requirement | Priority (Must/Should/Could) | Verification Method (Test/Inspection/Analysis/Demo) | Source.
+
+## 6. Non-Functional Requirements
+### 6.1 Performance (latency, throughput, accuracy, MTBF/MTTR, availability)
+### 6.2 Power & Thermal (budgets in W, junction temps, derating)
+### 6.3 Mechanical & Environmental (IP rating, vibration MIL-STD-810, shock, temp range, humidity)
+### 6.4 EMC/EMI & Safety (FCC Part 15, CE, IEC 61000, IEC 62368-1)
+### 6.5 Reliability (FIT rates, qualification cycles, accelerated life testing)
+### 6.6 Security & Data Protection (encryption, secure boot, key management, GDPR/HIPAA where applicable)
+### 6.7 Manufacturability & Serviceability (DFM/DFA/DFT scores, test coverage targets)
+
+## 7. Technical Constraints
+Technology choices, COTS vs custom, supply-chain constraints, IP/licensing, legacy compatibility.
+
+## 8. Regulatory & Compliance Matrix
+Table: Region | Standard | Scope | Owner | Evidence required.
+
+## 9. Risk Register
+Table: Risk | Likelihood (L/M/H) | Impact (L/M/H) | Mitigation | Owner. Cover at least 6 technical, supply-chain, and regulatory risks.
+
+## 10. Bill-of-Materials Strategy
+Critical components anticipated, second-source policy, long-lead items, obsolescence strategy.
+
+## 11. Verification & Validation Plan
+Map each FR/NFR to a test phase (Bench, EVT, DVT, PVT, Field). Reference ${p.gate_standard} gate criteria.
+
+## 12. ${p.gate_standard} Gate Alignment
+For each gate (Concept, Plan, Design, Verify, Validate, Launch — adapted to ${p.gate_standard}): entry criteria, deliverables, exit criteria.
+
+## 13. Open Questions & Assumptions
+Numbered list; flag every assumption with [ASSUMPTION] and every blocker with [OPEN].
+
+## 14. References
+Numbered list of cited standards and the [Doc N] grounding sources used.
+
+CRITICAL: Do NOT pad with generic boilerplate. Every section must contain product-specific, numerically grounded engineering content.`,
 
   bom_from_prd: (p) => `Based on this PRD for a ${p.product_description}:
 
@@ -129,11 +179,12 @@ serve(async (req) => {
       method: "POST",
       headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: task === "prd_generate" ? "google/gemini-2.5-pro" : "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: "You are an expert supply chain & procurement assistant for hardware NPI teams. Be precise, terse, and engineering-focused." },
           { role: "user", content: prompt },
         ],
+        max_tokens: task === "prd_generate" ? 8000 : 4000,
       }),
     });
 
