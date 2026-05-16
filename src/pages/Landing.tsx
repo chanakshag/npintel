@@ -287,19 +287,19 @@ export default function Landing() {
                   </div>
                   <div className={reverse ? "lg:order-1" : ""}>
                     <Card className="overflow-hidden border-slate-200 bg-white p-1 shadow-md">
-                      <div className="rounded-md bg-navy p-6">
-                        <div className="flex items-center gap-2 border-b border-white/10 pb-3">
-                          <f.icon className="h-4 w-4 text-primary-glow" />
-                          <span className="text-xs font-semibold uppercase tracking-wider text-white/70">{f.title}</span>
+                      <div className="rounded-md bg-white p-6">
+                        <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+                          <f.icon className="h-4 w-4 text-primary" />
+                          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">{f.title}</span>
                         </div>
                         <div className="mt-4 space-y-2.5">
                           {[0, 1, 2, 3].map(n => (
-                            <div key={n} className="flex items-center gap-3 rounded-md border border-white/10 bg-white/5 px-3 py-2.5">
-                              <CheckCircle2 className="h-4 w-4 shrink-0 text-primary-glow" />
-                              <div className="h-2 flex-1 rounded-full bg-white/10">
-                                <div className="h-full rounded-full bg-primary-glow/60" style={{ width: `${85 - n * 15}%` }} />
+                            <div key={n} className="flex items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5">
+                              <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+                              <div className="h-2 flex-1 rounded-full bg-slate-200">
+                                <div className="h-full rounded-full bg-primary/60" style={{ width: `${85 - n * 15}%` }} />
                               </div>
-                              <span className="font-mono text-[10px] text-white/60">{(85 - n * 15)}%</span>
+                              <span className="font-mono text-[10px] text-slate-500">{(85 - n * 15)}%</span>
                             </div>
                           ))}
                         </div>
