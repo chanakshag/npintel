@@ -65,34 +65,34 @@ const testimonials = [
 const HeroMockup = () => (
   <div className="relative mx-auto max-w-4xl">
     <div className="absolute inset-x-10 -bottom-6 h-24 rounded-full bg-primary/20 blur-3xl" />
-    <Card className="relative overflow-hidden rounded-xl border-slate-200 bg-navy p-1 shadow-2xl">
-      <div className="rounded-lg bg-navy">
+    <Card className="relative overflow-hidden rounded-xl border-slate-200 bg-white p-1 shadow-2xl">
+      <div className="rounded-lg bg-white">
         {/* Window chrome */}
-        <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
-          <div className="h-2.5 w-2.5 rounded-full bg-white/20" />
-          <div className="h-2.5 w-2.5 rounded-full bg-white/20" />
-          <div className="h-2.5 w-2.5 rounded-full bg-white/20" />
-          <div className="ml-3 text-[11px] font-medium text-white/60">Spectir · Pump Rev B · Gate DVT Review</div>
+        <div className="flex items-center gap-2 border-b border-slate-200 px-4 py-3">
+          <div className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+          <div className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+          <div className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+          <div className="ml-3 text-[11px] font-medium text-slate-500">Spectir · Pump Rev B · Gate DVT Review</div>
         </div>
         <div className="grid gap-4 p-5 md:grid-cols-3">
           {/* Phase progress */}
-          <div className="rounded-md border border-white/10 bg-white/5 p-4 md:col-span-2">
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-4 md:col-span-2">
             <div className="mb-3 flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-white/70">Gate Readiness</span>
-              <span className="rounded bg-primary/20 px-2 py-0.5 text-[10px] font-medium text-primary-glow">DVT · 87%</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Gate Readiness</span>
+              <span className="rounded bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">DVT · 87%</span>
             </div>
             {[
-              { label: "Requirements verified", pct: 100, color: "bg-emerald-400" },
-              { label: "Test reports linked", pct: 92, color: "bg-emerald-400" },
-              { label: "Supplier qualification", pct: 78, color: "bg-amber-400" },
-              { label: "Change orders closed", pct: 65, color: "bg-amber-400" },
-              { label: "Risk mitigations", pct: 100, color: "bg-emerald-400" },
+              { label: "Requirements verified", pct: 100, color: "bg-emerald-500" },
+              { label: "Test reports linked", pct: 92, color: "bg-emerald-500" },
+              { label: "Supplier qualification", pct: 78, color: "bg-amber-500" },
+              { label: "Change orders closed", pct: 65, color: "bg-amber-500" },
+              { label: "Risk mitigations", pct: 100, color: "bg-emerald-500" },
             ].map(r => (
               <div key={r.label} className="mb-2.5 last:mb-0">
-                <div className="mb-1 flex items-center justify-between text-[11px] text-white/80">
+                <div className="mb-1 flex items-center justify-between text-[11px] text-slate-700">
                   <span>{r.label}</span><span className="font-mono">{r.pct}%</span>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+                <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
                   <div className={`h-full ${r.color}`} style={{ width: `${r.pct}%` }} />
                 </div>
               </div>
@@ -100,14 +100,14 @@ const HeroMockup = () => (
           </div>
           {/* Side panel */}
           <div className="space-y-3">
-            <div className="rounded-md border border-white/10 bg-white/5 p-3">
-              <div className="text-[10px] uppercase tracking-wider text-white/60">Open issues</div>
-              <div className="mt-1 font-mono text-2xl font-semibold text-white">7</div>
-              <div className="text-[11px] text-amber-300">3 blocking gate</div>
+            <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
+              <div className="text-[10px] uppercase tracking-wider text-slate-500">Open issues</div>
+              <div className="mt-1 font-mono text-2xl font-semibold text-slate-800">7</div>
+              <div className="text-[11px] text-amber-600">3 blocking gate</div>
             </div>
-            <div className="rounded-md border border-primary/30 bg-primary/10 p-3">
-              <div className="text-[10px] uppercase tracking-wider text-primary-glow">AI summary</div>
-              <p className="mt-1 text-[11px] leading-relaxed text-white/80">
+            <div className="rounded-md border border-primary/30 bg-primary/5 p-3">
+              <div className="text-[10px] uppercase tracking-wider text-primary">AI summary</div>
+              <p className="mt-1 text-[11px] leading-relaxed text-slate-600">
                 Ready for DVT in 4 days. 3 supplier docs pending; auto-requested.
               </p>
             </div>
@@ -287,19 +287,19 @@ export default function Landing() {
                   </div>
                   <div className={reverse ? "lg:order-1" : ""}>
                     <Card className="overflow-hidden border-slate-200 bg-white p-1 shadow-md">
-                      <div className="rounded-md bg-navy p-6">
-                        <div className="flex items-center gap-2 border-b border-white/10 pb-3">
-                          <f.icon className="h-4 w-4 text-primary-glow" />
-                          <span className="text-xs font-semibold uppercase tracking-wider text-white/70">{f.title}</span>
+                      <div className="rounded-md bg-white p-6">
+                        <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+                          <f.icon className="h-4 w-4 text-primary" />
+                          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">{f.title}</span>
                         </div>
                         <div className="mt-4 space-y-2.5">
                           {[0, 1, 2, 3].map(n => (
-                            <div key={n} className="flex items-center gap-3 rounded-md border border-white/10 bg-white/5 px-3 py-2.5">
-                              <CheckCircle2 className="h-4 w-4 shrink-0 text-primary-glow" />
-                              <div className="h-2 flex-1 rounded-full bg-white/10">
-                                <div className="h-full rounded-full bg-primary-glow/60" style={{ width: `${85 - n * 15}%` }} />
+                            <div key={n} className="flex items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5">
+                              <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+                              <div className="h-2 flex-1 rounded-full bg-slate-200">
+                                <div className="h-full rounded-full bg-primary/60" style={{ width: `${85 - n * 15}%` }} />
                               </div>
-                              <span className="font-mono text-[10px] text-white/60">{(85 - n * 15)}%</span>
+                              <span className="font-mono text-[10px] text-slate-500">{(85 - n * 15)}%</span>
                             </div>
                           ))}
                         </div>
